@@ -1,0 +1,33 @@
+{
+  "name": "cleaningschedule",
+  "version": "1.0.0",
+  "description": "Cleaning Schedule App",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bigyam/CleaningSchedule.git"
+  },
+  "keywords": [
+    "cleaning",
+    "schedule"
+  ],
+  "author": "Andrew Ruan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bigyam/CleaningSchedule/issues"
+  },
+  "homepage": "https://github.com/bigyam/CleaningSchedule#readme",
+  "devDependencies": {
+    "concurrently": "^5.1.0",
+    "nodemon": "^2.0.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "pg": "^7.18.1"
+  }
+}
