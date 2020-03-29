@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 
 app.use('/api/task', require('./api/task'));
 app.use('/api/room', require('./api/room'));
+app.use('/api/scheduleItem', require('./api/scheduleItem'));
 
 app.listen(PORT, () => {
 	console.log(`Server Listening Port ${PORT}...`);

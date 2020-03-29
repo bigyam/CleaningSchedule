@@ -21,10 +21,12 @@ router.get('/:itemId', function(req, res) {
 	});
 });
 
-router.post('/', function (req, res) { //completed till here
-	var roomName = req.body.roomName;
+router.post('/', function (req, res) {
+	var scope = req.body.scope;
+	var taskId = req.body.taskId;
+	var roomId = req.body.roomId;
 
-	ScheduleItem.insert(roomName, function (err, result) {
+	ScheduleItem.insert(scope, taskId, roomId, function (err, result) {
 		if (err)
 			return res.json(err);
 		return res.json(result);
@@ -32,20 +34,21 @@ router.post('/', function (req, res) { //completed till here
 });
 
 router.put('/', function(req, res) {
-	var roomId = req.body.roomId;
-	var roomName = req.body.roomName;
+	var itemId = req.body.itemId;
+	var colName = req.body.colName;
+	var colValue = req.body.colValue;
 
-	ScheduleItem.update(roomId, roomName, function(err, result) {
+	ScheduleItem.update(itemId, colName, colValue, function(err, result) {
 		if(err)
 			return res.json(err);
 		return res.json(result);
-	}); //update (itemId, itemName, callback) {
+	});
 });
 
 router.delete('/', function (req, res) {
-	var roomId = req.body.roomId;
+	var itemId = req.body.itemId;
 
-	ScheduleItem.delete(roomId, function (err, result) {
+	ScheduleItem.delete(itemId, function (err, result) {
 		if(err)
 			return res.json(err);
 		return res.json(result);
