@@ -21,7 +21,7 @@ const router = new Router({
       children: [
         {
           path: '',
-          component: () => import('@/pages/index.vue')
+          component: () => import('@/pages/config/rooms.vue') //@/pages/index.vue
         }
       ]
     }
