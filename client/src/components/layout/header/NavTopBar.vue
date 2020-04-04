@@ -25,11 +25,11 @@
       <v-col lg="4" offset-lg="4" align-self="center" class="mr-9 pr-9">
         <v-toolbar-items class="justify-end align-center">
           <nav-search v-if="showSearch" v-bind="getProps()" @input="(val) => $emit('input', val)" style="padding-top:0" />
-        
+<!--        
           <nav-profile v-bind="getProps()">
               <template slot="profile"><slot name="profile"></slot></template>
           </nav-profile>
-
+-->
           <v-icon
           v-show="displayAppTourButton" 
           class="ml-2"
@@ -44,14 +44,14 @@
 
 <script>
 import NavSearch from './NavSearch'
-import NavProfile from './NavProfile'
+//import NavProfile from './NavProfile'
 import NavBar from './NavBar'
 
 import Props from './mixin/props.js'
 
 export default {
     name: 'nav-top-bar',
-    components: {  NavSearch, NavProfile, NavBar },
+    components: {  NavSearch, NavBar}, // NavProfile },
     mixins: [ Props ],
     props: { drawer: { default: null }},
 }

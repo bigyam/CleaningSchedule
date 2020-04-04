@@ -1,6 +1,6 @@
 const db = require('../database');
 
-class rooms {
+class Room {
 	static retrieveAll(callback) {
 		db.query('SELECT id, room_name from rooms ORDER BY id DESC', function (err, res) {
 			if (err.error)

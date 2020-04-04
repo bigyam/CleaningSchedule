@@ -39,8 +39,8 @@
                     <v-row>
                         <v-col cols="12" class="my-n2">
                             <v-text-field 
-                                v-model="selectedItem.en" 
-                                :label="Name">
+                                v-model="selectedItem.name" 
+                                label="Name">
                             </v-text-field>
                         </v-col>
                     </v-row>
@@ -58,34 +58,43 @@
 
 <script>
     export default {
-        data() {
+        data() { 
             return {
                 search: null,
                 showDelete: false,
                 isLoading: false,
-                //showEdit: false,
-                //selectedItem: {},
+                showEdit: false,
+                selectedItem: {},
                 rooms: [],
+                singleRoom: null
             }
         },
         computed: {
             headers() {
                 let headers = [
                     { text: 'Name', value: 'room_name', align: 'left', width: '25%' },
-                    { text: 'Id', value: 'id', align: 'left', width: '25%' },
+                    //{ text: 'Id', value: 'id', align: 'left', width: '25%' },
                 ]; 
                 return headers
             }
         },
         methods: {
             fetchData() {
-                return this.$service.admin.getRooms().then(resp => {
+                return this.$service.config.getRooms().then(resp => {
                     this.rooms = resp.data;
+                    console.log('rooms', this.rooms);
+                    //TODO: APR 4 - ADD CORS RULES FOR SERVER RESPONSE
                 });
             },
+            fetchRooms() {
+                return this.$service.config.getSingleRoom(1).then(resp => {
+                    this.singleRoom = resp.data;
+                });
+            }
         },
         created() {
             this.fetchData();
+            this.fetchRooms();
         }
     }
 </script>

@@ -5,7 +5,7 @@ import axios from "axios";
 
 // Full config:  https://github.com/axios/axios#request-config
 let config = {
-  baseURL: `${process.env.VUE_APP_API}`,  
+  baseURL: 'http://localhost:5000'
 };
 
 const _axios = axios.create(config);

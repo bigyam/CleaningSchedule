@@ -5,6 +5,20 @@ import router from './router.js'
 import service from '@/service'
 import './plugins/axios'
 
+//import axios from 'axios'
+
+//let config = {
+//  baseURL: 'http://localhost:5000'
+//};
+/**const _axios = axios.create({
+	baseURL: 'https://some-domain.com/api/',
+  timeout: 1000,
+  headers: {'X-Custom-Header': 'foobar'}
+});
+
+window.axios = _axios;
+Vue.prototype.$http = _axios;**/
+
 Vue.prototype.$http = Vue.prototype.axios;
 Vue.prototype.$service = service;
 

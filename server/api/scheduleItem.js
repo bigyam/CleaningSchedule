@@ -1,5 +1,5 @@
 var express = require('express');
-var ScheduleItem = require('../models/ScheduleItem');
+var ScheduleItem = require('../models/scheduleItem');
 
 var router = express.Router();
 
