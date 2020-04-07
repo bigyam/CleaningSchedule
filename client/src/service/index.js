@@ -9,7 +9,7 @@ export default{
 			return axios.get(routes.room);
 		},
 		getSingleRoom(roomId) {
-			return axios.get(routes.room, {params: {roomId}});
+			return axios.get(routes.singleRoom, {params: {roomId}});
 		}
 	}
 }

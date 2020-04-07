@@ -11,7 +11,7 @@ router.get('/', function (req, res) {
 	});
 });
 
-router.get('/:roomId', function(req, res) {
+router.get('/singleRoom/:roomId', function(req, res) {
 	var roomId = req.params.roomId;
 
 	Room.getRoom(roomId, function (err, result) {
