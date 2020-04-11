@@ -21,7 +21,9 @@
                     <template v-slot:item.id="{ item }">
                         <v-icon v-if="item.hasScenarios" color="success">check</v-icon>
                     </template>
-
+                    <template v-slot:item.complexity="{ item }">
+                        {{ matchComplexity(item) }}
+                    </template>
                     <template v-slot:item.action="{ item }">
                         <v-btn class="mx-1" icon outlined color="#9ba5e0" @click.stop="onEdit(item)"><v-icon>edit</v-icon></v-btn>
                         <v-btn class="mx-1" icon outlined color="#9ba5e0" @click.stop="onDelete(item.id)" title='Delete'><v-icon>delete</v-icon></v-btn> 
@@ -82,14 +84,14 @@
             headers() {
                 let headers = [
                     { text: 'Name', value: 'room_name', align: 'left', width: '25%' },
-                    { text: 'Complexity', value: '', align: 'left', width: '25%' },
+                    { text: 'Complexity', value: 'complexity', align: 'left', width: '25%' },
                     { text: 'Actions', value: 'action', align: 'left', width: '25%' },
                 ]; 
                 return headers
             },
             complexity() {
                 return [ {id: 1, label: "Low"},{id: 2, label: "Medium"},{id: 3, label: "High"},]
-            }
+            },
         },
         methods: {
             fetchData() {
@@ -111,9 +113,14 @@
             },
             cancel() {
                 this.showEdit = false;
+                this.selectedItem = {};
             },
             save() {
                 this.showEdit = false;
+                this.selectedItem = {};
+            },
+            matchComplexity(item) {
+                return this.complexity.find(x => x.id == item.complexity).label;
             }
         },
         created() {
