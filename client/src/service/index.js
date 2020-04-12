@@ -10,6 +10,15 @@ export default{
 		},
 		getSingleRoom(roomId) {
 			return axios.get(routes.singleRoom, {params: {roomId}});
+		},
+		addRoom(data) {
+			return axios.post(routes.room, data);
+		},
+		updateRoom(data) {
+			return axios.put(routes.room, data);
+		},
+		deleteRoom(roomId) {
+			return axios.delete(routes.room, {data:{roomId}});
 		}
 	}
 }

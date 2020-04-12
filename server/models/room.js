@@ -17,15 +17,15 @@ class Room {
 		});
 	}
 
-	static insert (item, callback) {
-			db.query('INSERT INTO rooms (room_name, complexity) VALUES ($1)', [item], function (err, res) {
+	static insertRoom (itemName, itemComplexity, callback) {
+			db.query('INSERT INTO rooms (room_name, complexity) VALUES ($1, $2)', [itemName, itemComplexity], function (err, res) {
 				if (err.error)
 					return callback(err);
 				callback(res);
 			});
 	}
 
-	static update (itemId, itemName, callback) {
+	static updateRoom (itemId, itemName, itemComplexity, callback) {
 			db.query('UPDATE rooms SET room_name = $1, complexity = $3 WHERE id = $2', [itemName, itemId, itemComplexity], function (err, res) {
 				if (err.error)
 					return callback(err);
@@ -33,7 +33,7 @@ class Room {
 			});
 	}
 
-	static delete (itemId, callback) {
+	static deleteRoom (itemId, callback) {
 		db.query('DELETE FROM rooms WHERE id = $1', [itemId], function (err, res) {
 			if (err.error)
 				return callback(err);

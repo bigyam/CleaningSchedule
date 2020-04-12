@@ -23,8 +23,9 @@ router.get('/singleRoom/', function(req, res) {
 
 router.post('/', function (req, res) {
 	var roomName = req.body.roomName;
+	var roomComplexity = req.body.roomComplexity;
 
-	Room.insert(roomName, function (err, result) {
+	Room.insertRoom(roomName, roomComplexity, function (err, result) {
 		if (err)
 			return res.json(err);
 		return res.json(result);
@@ -34,18 +35,20 @@ router.post('/', function (req, res) {
 router.put('/', function(req, res) {
 	var roomId = req.body.roomId;
 	var roomName = req.body.roomName;
+	var roomComplexity = req.body.roomComplexity;
 
-	Room.update(roomId, roomName, function(err, result) {
+	Room.updateRoom(roomId, roomName, roomComplexity, function(err, result) {
 		if(err)
 			return res.json(err);
 		return res.json(result);
-	}); //update (itemId, itemName, callback) {
+	});
 });
 
 router.delete('/', function (req, res) {
 	var roomId = req.body.roomId;
+	console.log('roomid', roomId);
 
-	Room.delete(roomId, function (err, result) {
+	Room.deleteRoom(roomId, function (err, result) {
 		if(err)
 			return res.json(err);
 		return res.json(result);
