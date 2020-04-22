@@ -10,11 +10,20 @@
                     <v-col>
                         <v-card>
                             <v-card-title>
-                                <v-chip label regular color="cyan">Daily</v-chip>
+                                <v-chip label regular color="#9ba5e0">Daily</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                Rooms and tasks
+                                <v-row v-for="items in dailyRooms" :key="items.index">
+                                    <v-card>
+                                        <v-card-title>
+                                            {{items.name}}
+                                        </v-card-title>
+                                    </v-card>
+                                </v-row>
                             </v-card-text>
+                            <v-card-actions>
+                                <v-btn class="mx-1" icon outlined color="#9ba5e0" @click.stop="addRoom()"><v-icon>add</v-icon></v-btn>
+                            </v-card-actions>
                         </v-card>
                     </v-col>
                    <v-col>
@@ -23,7 +32,13 @@
                                 <v-chip label>Weekly</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                Rooms and tasks
+                                <v-row v-for="items in weeklyRooms" :key="items.index">
+                                    <v-card>
+                                        <v-card-title>
+                                            {{items.name}}
+                                        </v-card-title>
+                                    </v-card>
+                                </v-row>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -33,7 +48,13 @@
                                 <v-chip label>Monthly</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                Rooms and tasks
+                                <v-row v-for="items in monthlyRooms" :key="items.index">
+                                    <v-card>
+                                        <v-card-title>
+                                            {{items.name}}
+                                        </v-card-title>
+                                    </v-card>
+                                </v-row>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -101,6 +122,8 @@
                 selectedItem: {},
                 rooms: [],
                 singleRoom: null,
+                dailyRooms: [{name:"cow", index:1}, {name:"dog", index:2}, {name: "cat", index:3}],
+                showAddRoom: false,
             }
         },
         computed: {
@@ -176,6 +199,9 @@
             },
             onAddClick() {
                 this.showEdit = true;
+            },
+            addRoom() {
+                
             }
         },
         created() {
