@@ -6,6 +6,11 @@
         </v-toolbar>
         <v-card outlined width="100%">
             <v-card-text>
+                <v-row align="baseline">
+                    <v-col>
+                        <v-btn outlined color="#9ba5e0" @click.stop="addRoom()">Add Room</v-btn>
+                    </v-col>
+                </v-row>
                 <v-row>
                     <v-col>
                         <v-card>
@@ -17,12 +22,13 @@
                                     <v-card>
                                         <v-card-title>
                                             {{items.name}}
+                                            {{items.room ? items.room.room_name : "" }}
                                         </v-card-title>
                                     </v-card>
                                 </v-row>
                             </v-card-text>
                             <v-card-actions>
-                                <v-btn class="mx-1" icon outlined color="#9ba5e0" @click.stop="addRoom()"><v-icon>add</v-icon></v-btn>
+                                
                             </v-card-actions>
                         </v-card>
                     </v-col>
@@ -62,26 +68,30 @@
             </v-card-text>     
         </v-card>
 
-        <v-dialog persistent v-model="showEdit" max-width="900px">
+        <v-dialog persistent v-model="showAddRoom" max-width="900px">
             <v-card>
-                <v-card-title class="title">Room Details</v-card-title>
+                <v-card-title class="title">Add Room</v-card-title>
                 <v-card-text>
                     <v-row>
                         <v-col cols="12" class="my-n2">
-                            <v-text-field 
-                                v-model="selectedItem.room_name" 
-                                label="Name">
-                            </v-text-field>
+                            <v-select 
+                                v-model="roomToAdd.yearScope" 
+                                label="Scope"
+                                :items="yearScope"
+                                item-value='id'
+                                item-text='scopeName'>
+                            </v-select>
                         </v-col>
                     </v-row>
                     <v-row>
                         <v-col cols="12" class="my-n2">
                             <v-select 
-                                v-model="selectedItem.complexity" 
-                                label="Complexity"
-                                :items="complexity"
-                                item-value='id'
-                                item-text='label'>
+                                v-model="roomToAdd.room" 
+                                label="Room"
+                                :items="rooms"
+                                
+                                item-text='room_name'
+                                return-object>
                             </v-select>
                         </v-col>
                     </v-row>
@@ -90,7 +100,7 @@
                 <v-card-actions>
                     <v-spacer />
                     <v-btn @click="cancel()" right>Cancel</v-btn>
-                    <v-btn color="#9ba5e0" @click="save()" :loading="isLoading" right>Submit</v-btn>
+                    <v-btn color="#9ba5e0" @click="submit()" :loading="isLoading" right>Submit</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -121,9 +131,11 @@
                 showEdit: false,
                 selectedItem: {},
                 rooms: [],
+                yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
                 singleRoom: null,
                 dailyRooms: [{name:"cow", index:1}, {name:"dog", index:2}, {name: "cat", index:3}],
                 showAddRoom: false,
+                roomToAdd: {yearScope: null, room: null}
             }
         },
         computed: {
@@ -167,8 +179,24 @@
                 })
             },
             cancel() {
-                this.showEdit = false;
+                this.showAddRoom = false;
                 this.selectedItem = {};
+            },
+            submit() {
+                switch(this.roomToAdd.yearScope) {
+                    case 0:
+                        // for daily
+                        this.dailyRooms.push(this.roomToAdd);
+                        this.roomToAdd = {yearScope: null, room: null};
+                        break;
+                    case 1:
+                        // for weekly
+                        break;
+                    case 2:
+                        //for monthly
+                        break;
+                }
+                this.showAddRoom = false;
             },
             save() {
                 if(Object.prototype.hasOwnProperty.call(this.selectedItem, 'index')) {
@@ -201,7 +229,7 @@
                 this.showEdit = true;
             },
             addRoom() {
-                
+                this.showAddRoom = true;
             }
         },
         created() {
