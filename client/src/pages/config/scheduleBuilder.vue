@@ -24,6 +24,9 @@
                                             {{items.name}}
                                             {{items.room ? items.room.room_name : "" }}
                                         </v-card-title>
+                                        <v-card-action>
+                                            <v-btn outlined small color="#9ba5e0" @click.stop="addTask(item)">+ Task</v-btn>
+                                        </v-card-action>
                                     </v-card>
                                 </v-row>
                             </v-card-text>
@@ -118,12 +121,45 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-dialog persistent v-model="showAddTaskToRoom" max-width="500px">
+            <v-card>
+                <v-card-title>Add Task</v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col>
+                            <v-select 
+                                    v-model="selectedTask" 
+                                    label="tasks"
+                                    :items="tasks"
+                                    >
+                            </v-select>
+                        </v-col>
+                        <v-col class="ma-0 pa-0">
+                            <v-btn color="#9ba5e0" icon outlined @click="showAddTask = true"><v-icon>add</v-icon></v-btn>
+                        </v-col>
+                        <v-col v-if="showAddTask">
+                            <v-text-field
+                                v-model="taskToAdd"
+                                label="Task Name"
+                                />
+                            <v-btn color="#9ba5e0" outlined @click="addTask()">Add</v-btn>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                 <v-card-actions>
+                    <v-btn @click="showAddTaskToRoom = false" right>Cancel</v-btn>
+                    <v-btn color="#9ba5e0" @click="addTaskToRoom()" :loading="isLoading" right>Submit</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </v-container>   
 </template>
 
 <script>
     export default {
         data() { 
+            //TODO: all buttons and functions within showAddTaskToRoom dialog
+            //TODO: connect APIs for Task.  setup model and api for schedule items
             return {
                 search: null,
                 showDelete: false,
@@ -135,7 +171,11 @@
                 singleRoom: null,
                 dailyRooms: [{name:"cow", index:1}, {name:"dog", index:2}, {name: "cat", index:3}],
                 showAddRoom: false,
-                roomToAdd: {yearScope: null, room: null}
+                roomToAdd: {yearScope: null, room: null},
+                tasks: [],
+                selectedTask: {},
+                showAddTaskToRoom: false,
+                showAddTask: false
             }
         },
         computed: {
@@ -162,6 +202,7 @@
                 return this.$service.config.getRooms().then(resp => {
                     this.rooms = resp.data;
                 });
+                //fetch schedule list 
             },
             onEdit(item) {
                 this.selectedItem = {...item};
