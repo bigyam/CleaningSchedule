@@ -165,7 +165,6 @@
                 showDelete: false,
                 isLoading: false,
                 showEdit: false,
-                selectedItem: {},
                 rooms: [],
                 yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
                 singleRoom: null,
@@ -187,37 +186,29 @@
                 ]; 
                 return headers
             },
-            complexity() {
-                return [ {id: 1, label: "Low"},{id: 2, label: "Medium"},{id: 3, label: "High"},]
-            },
-            indexedRoomList() {
-                return this.rooms.map((item, idx) => ({
-                    index: idx,
-                    ...item
-                }))
-            }
         },
         methods: {
             fetchData() {
-                return this.$service.config.getRooms().then(resp => {
+                this.$service.config.getRooms().then(resp => {
                     this.rooms = resp.data;
                 });
+                this.$service.config.getTasks().then(resp => {
+                    this.tasks = resp.data;
+                })
                 //fetch schedule list 
             },
             onEdit(item) {
                 this.selectedItem = {...item};
                 this.showEdit = true;
             },
-            onDelete(item) {
-                this.showDelete = true;
-                this.selectedItem = item;
+            addTask() {
+
+            },
+            onDelete() {
+                
             },
             onConfirmDelete() {
-                this.$service.config.deleteRoom(this.selectedItem.id).then(() => {
-                        this.rooms.splice(this.selectedItem.index,1);
-                        this.showDelete = false;
-                        this.selectedItem = {};
-                })
+                
             },
             cancel() {
                 this.showAddRoom = false;
@@ -240,31 +231,7 @@
                 this.showAddRoom = false;
             },
             save() {
-                if(Object.prototype.hasOwnProperty.call(this.selectedItem, 'index')) {
-                    let model = {
-                        roomId: this.selectedItem.id,
-                        roomName: this.selectedItem.room_name,
-                        roomComplexity: this.selectedItem.complexity
-                    };
-                    this.$service.config.updateRoom(model).then(() => {
-                        this.fetchData();
-                        this.showEdit = false;
-                        this.selectedItem = {};
-                    })
-                } else {
-                    let model = {
-                        roomName: this.selectedItem.room_name,
-                        roomComplexity: this.selectedItem.complexity,
-                    }
-                    this.$service.config.addRoom(model).then(() => {
-                        this.fetchData();
-                        this.showEdit = false;
-                        this.selectedItem = {};        
-                    })
-                }
-            },
-            matchComplexity(item) {
-                return this.complexity.find(x => x.id == item.complexity).label;
+                
             },
             onAddClick() {
                 this.showEdit = true;

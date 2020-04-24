@@ -1,7 +1,7 @@
 const db = require('../database');
 
 class Task {
-	static retrieveAll() {
+	static retrieveAll(callback) {
 		db.query('SELECT id, task_name from tasks ORDER BY id DESC', function (err, res) {
 			if (err.error)
 				return callback(err);

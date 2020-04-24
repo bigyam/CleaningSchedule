@@ -19,6 +19,18 @@ export default{
 		},
 		deleteRoom(roomId) {
 			return axios.delete(routes.room, {data:{roomId}});
-		}
+		},
+		getTasks() {
+			return axios.get(routes.task);
+		},
+		addTask(data) {
+			return axios.post(routes.task, data);
+		},
+		updateTask(data) {
+			return axios.put(routes.task, data);
+		},
+		deleteTask(taskId) {
+			return axios.delete(routes.task, {data:{taskId}});
+		},
 	}
 }
