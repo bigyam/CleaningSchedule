@@ -24,9 +24,9 @@
                                             {{items.name}}
                                             {{items.room ? items.room.room_name : "" }}
                                         </v-card-title>
-                                        <v-card-action>
-                                            <v-btn outlined small color="#9ba5e0" @click.stop="addTask(item)">+ Task</v-btn>
-                                        </v-card-action>
+                                        <v-card-actions>
+                                            <v-btn outlined small color="#9ba5e0" @click.stop="addTaskDialog(items, 0)">+ Task</v-btn>
+                                        </v-card-actions>
                                     </v-card>
                                 </v-row>
                             </v-card-text>
@@ -131,6 +131,8 @@
                                     v-model="selectedTask" 
                                     label="tasks"
                                     :items="tasks"
+                                    item-text='task_name'
+                                    return-object
                                     >
                             </v-select>
                         </v-col>
@@ -167,14 +169,18 @@
                 showEdit: false,
                 rooms: [],
                 yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
-                singleRoom: null,
-                dailyRooms: [{name:"cow", index:1}, {name:"dog", index:2}, {name: "cat", index:3}],
+                singleRoom: null, //could be unused variable
+                dailyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master", index:3}],
+                weeklyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master", index:3}],
+                monthlyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master", index:3}],
                 showAddRoom: false,
                 roomToAdd: {yearScope: null, room: null},
                 tasks: [],
                 selectedTask: {},
                 showAddTaskToRoom: false,
-                showAddTask: false
+                showAddTask: false,
+                taskToAdd: null,
+                selectedRoom: {}
             }
         },
         computed: {
@@ -201,8 +207,33 @@
                 this.selectedItem = {...item};
                 this.showEdit = true;
             },
+            addTaskDialog(item, yearScope) {
+                this.showAddTaskToRoom = true;
+                this.selectedRoom = Object.assign(item);
+                this.selectedRoom.yearScope = yearScope;
+            },
             addTask() {
-
+                let model =  {
+                    taskName: this.taskToAdd
+                };
+                this.$service.config.addTask(model).then(() => {
+                    this.fetchData();
+                    this.showAddTask = false;
+                    this.taskToAdd = null;
+                })
+            },
+            addTaskToRoom () {
+                //scheduleItem db
+                let model = {
+                    scope: this.selectedRoom.yearScope,
+                    taskId: this.selectedTask.id,
+                    roomId: this.selectedRoom.id //room id does not exist
+                }
+                this.$service.config.addScheduleItem(model).then(() => {
+                    this.fetchData();
+                    this.selectedRoom = {};
+                    this.selectedTask = {};
+                })
             },
             onDelete() {
                 

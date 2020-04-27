@@ -32,5 +32,17 @@ export default{
 		deleteTask(taskId) {
 			return axios.delete(routes.task, {data:{taskId}});
 		},
+		getScheduleItems() {
+			return axios.get(routes.scheduleItem);
+		},
+		addScheduleItem(data) {
+			return axios.post(routes.scheduleItem, data);
+		},
+		updateScheduleItem(data) {
+			return axios.put(routes.scheduleItem, data);
+		},
+		deleteScheduleItem(itemId) {
+			return axios.delete(routes.scheduleItem, {data: {itemId}});
+		}
 	}
 }
