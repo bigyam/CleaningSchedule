@@ -18,11 +18,10 @@
                                 <v-chip label regular color="#9ba5e0">Daily</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <v-row v-for="items in dailyRooms" :key="items.index">
+                                <v-row v-for="items in dailyRooms" :key="items.key">
                                     <v-card>
                                         <v-card-title>
-                                            {{items.name}}
-                                            {{items.room ? items.room.room_name : "" }}
+                                            {{ matchRoomName(items) }}
                                         </v-card-title>
                                         <v-card-actions>
                                             <v-btn outlined small color="#9ba5e0" @click.stop="addTaskDialog(items, 0)">+ Task</v-btn>
@@ -200,9 +199,37 @@
                 });
                 this.$service.config.getTasks().then(resp => {
                     this.tasks = resp.data;
-                })
+                });
+                this.$service.config.getScheduleItems().then(resp => {
+                    let items = resp.data.filter(x => x.yearscope == 0);
+                    
+                    this.dailyRooms = this.groupBy(items, item => item.room_id);
+                    //console.log('tempRoom', tempRoom);
+                    //need to group items by rooms
+                    
+                });
                 //fetch schedule list 
             },
+            groupBy(list, keyGetter) {
+                //this needs to change from maps to arrays for vuetify to support
+                const map = new Map();
+                list.forEach((item) => {
+                     const key = keyGetter(item);
+                     const collection = map.get(key);
+                     if (!collection) {
+                         map.set(key, [item]);
+                     } else {
+                         collection.push(item);
+                     }
+                });
+                return map;
+            },
+            matchRoomName(item) {
+                console.log("item", item);
+                console.log(this.rooms.find(x => x.id == item.key));
+                return this.rooms.find(x => x.id == item.key);
+            },
+
             onEdit(item) {
                 this.selectedItem = {...item};
                 this.showEdit = true;
@@ -224,17 +251,20 @@
             },
             addTaskToRoom () {
                 //scheduleItem db
+                
+            },
+            /** savingScheduleItem() {
                 let model = {
                     scope: this.selectedRoom.yearScope,
                     taskId: this.selectedTask.id,
-                    roomId: this.selectedRoom.id //room id does not exist
+                    roomId: this.selectedRoom.room.id //room id does not exist
                 }
                 this.$service.config.addScheduleItem(model).then(() => {
                     this.fetchData();
                     this.selectedRoom = {};
                     this.selectedTask = {};
                 })
-            },
+            }**/
             onDelete() {
                 
             },
