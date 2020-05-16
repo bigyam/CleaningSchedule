@@ -18,7 +18,7 @@
                                 <v-chip label regular color="#9ba5e0">Daily</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <v-row v-for="items in dailyRooms" :key="items.key">
+                                <v-row v-for="items in dailyRooms" :key="items.roomId">
                                     <v-card>
                                         <v-card-title>
                                             {{ matchRoomName(items) }}
@@ -159,8 +159,7 @@
 <script>
     export default {
         data() { 
-            //TODO: all buttons and functions within showAddTaskToRoom dialog
-            //TODO: connect APIs for Task.  setup model and api for schedule items
+            //TODO: May 16 - add selected task to daily room button
             return {
                 search: null,
                 showDelete: false,
@@ -204,30 +203,33 @@
                     let items = resp.data.filter(x => x.yearscope == 0);
                     
                     this.dailyRooms = this.groupBy(items, item => item.room_id);
-                    //console.log('tempRoom', tempRoom);
-                    //need to group items by rooms
                     
                 });
                 //fetch schedule list 
             },
             groupBy(list, keyGetter) {
-                //this needs to change from maps to arrays for vuetify to support
-                const map = new Map();
+
+                const array = [];
                 list.forEach((item) => {
                      const key = keyGetter(item);
-                     const collection = map.get(key);
+
+                     const collection = array.find(x => x.roomId == key);
+                     console.log('collection', collection);
+
+                     
                      if (!collection) {
-                         map.set(key, [item]);
+                        array.push({roomId: key, value: [item]});
+                         
                      } else {
-                         collection.push(item);
+                         collection.value.push(item);
                      }
                 });
-                return map;
+                return array;
             },
             matchRoomName(item) {
                 console.log("item", item);
-                console.log(this.rooms.find(x => x.id == item.key));
-                return this.rooms.find(x => x.id == item.key);
+                console.log(this.rooms.find(x => x.id == item.roomId));
+                return this.rooms.find(x => x.id == item.roomId).room_name;
             },
 
             onEdit(item) {
@@ -235,6 +237,7 @@
                 this.showEdit = true;
             },
             addTaskDialog(item, yearScope) {
+                //item in this case is a room object
                 this.showAddTaskToRoom = true;
                 this.selectedRoom = Object.assign(item);
                 this.selectedRoom.yearScope = yearScope;
