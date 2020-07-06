@@ -18,7 +18,7 @@ class Task {
 	}
 
 	static insert (item, callback) {
-			db.query('INSERT INTO tasks (task_name, iscomplete) VALUES ($1, false)', [item], function (err, res) {
+			db.query('INSERT INTO tasks (task_name) VALUES ($1)', [item], function (err, res) {
 				if (err.error)
 					return callback(err);
 				callback(res);

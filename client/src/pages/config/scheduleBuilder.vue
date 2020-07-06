@@ -18,13 +18,28 @@
                                 <v-chip label regular color="#9ba5e0">Daily</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <v-row v-for="items in dailyRooms" :key="items.roomId">
+                                <v-row v-for="room in dailyRooms" :key="room.roomId">
                                     <v-card>
                                         <v-card-title>
-                                            {{ matchRoomName(items) }}
+                                            {{ matchRoomName(room) }}
                                         </v-card-title>
+                                            
+                                        <v-card-text>
+                                            <v-list>
+                                                    <v-list-item
+                                                        v-for="(taskItem, i) in matchTaskName(room)"
+                                                        :key="i"
+                                                        @click="removeTask(taskItem)"
+                                                        >
+                                                        <v-list-item-content>
+                                                            <v-list-item-title v-text="taskItem.task_name"></v-list-item-title>
+                                                        </v-list-item-content>
+                                                    </v-list-item>
+                                            </v-list>
+
+                                        </v-card-text>
                                         <v-card-actions>
-                                            <v-btn outlined small color="#9ba5e0" @click.stop="addTaskDialog(items, 0)">+ Task</v-btn>
+                                            <v-btn outlined small color="#9ba5e0" @click.stop="addTaskDialog(room, 0)">+ Task</v-btn>
                                         </v-card-actions>
                                     </v-card>
                                 </v-row>
@@ -157,9 +172,12 @@
 </template>
 
 <script>
+import _ from 'lodash';
+
     export default {
         data() { 
-            //TODO: May 16 - add selected task to daily room button
+            //TODO: Jul 04 - redo this page.  Arch is too messy.  rethink layout.
+
             return {
                 search: null,
                 showDelete: false,
@@ -168,9 +186,10 @@
                 rooms: [],
                 yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
                 singleRoom: null, //could be unused variable
-                dailyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master", index:3}],
-                weeklyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master", index:3}],
-                monthlyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master", index:3}],
+                //dailyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master Ensuite", index:3}],
+                dailyRooms: [],
+                weeklyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master Ensuite", index:3}],
+                monthlyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master Ensuite", index:3}],
                 showAddRoom: false,
                 roomToAdd: {yearScope: null, room: null},
                 tasks: [],
@@ -227,11 +246,30 @@
                 return array;
             },
             matchRoomName(item) {
-                console.log("item", item);
-                console.log(this.rooms.find(x => x.id == item.roomId));
+                //console.log("item", item);
+                //console.log(this.rooms.find(x => x.id == item.roomId));
                 return this.rooms.find(x => x.id == item.roomId).room_name;
             },
+            matchTaskName(item) {
+                console.log('matchtaskname room',item);
+                let tempTasks = [];
+                let tempItem = _.cloneDeep(item);
+                tempItem.value.forEach((tasks) => {
+                    tempTasks.push({roomId: tempItem.roomId, ...this.tasks.find(x => x.id == tasks.task_id)});
+                });
+                console.log('temptasks', tempTasks);
+                return tempTasks;
+            },
+            removeTask(item) {
+                console.log('item remove task', item);
+                let room = this.dailyRooms.find(x => x.roomId == item.roomId).value;
+                console.log('room', room);
+                _.remove(room, function(n) {
+                    return n.id != item.id;
+                })
+                //this.dailyRooms.splice(item.)
 
+            },
             onEdit(item) {
                 this.selectedItem = {...item};
                 this.showEdit = true;
