@@ -18,7 +18,7 @@
                                 <v-chip label regular color="#9ba5e0">Daily</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                
+                                <room-editor v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" yearScope=0 />
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -29,11 +29,17 @@
 </template>
 
 <script>
+import RoomEditor from '../.././components/config/roomEditor.vue';
+
 export default {
+    components: {
+        RoomEditor
+    },
     data() {
         return {
             rooms: [],
-            tasks: []
+            tasks: [],
+            dailyRooms: []
         }        
     },
     computed: {
@@ -73,6 +79,9 @@ export default {
             });
             return array;
         },
+    },
+    created() {
+        this.fetchData();
     }
 
 }
