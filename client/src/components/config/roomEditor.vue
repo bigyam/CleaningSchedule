@@ -1,18 +1,21 @@
 <template>
     <v-row>
-        <v-card>
-            <v-card-title>
+        <v-card max-width flat>
+            <v-card-title class="primary white--text" style="height: 50px">
                 {{ getRoomName }}
             </v-card-title>
             <v-card-text>
-                <v-list>
+                <v-list dense>
                     <v-list-item 
-                        v-for="(taskItem, i) in roomDetails.value"
+                        v-for="(taskItem, i) in taskList"
                         :key="i"
                         >
                         <v-list-item-content>
                             <v-list-item-title v-text="getTaskName(taskItem)"></v-list-item-title>
                         </v-list-item-content>
+                        <v-list-item-action>
+                            <v-btn color="#9ba5e0" icon outlined @click="removeTaskToRoom(taskItem.index)"><v-icon>remove</v-icon></v-btn>
+                        </v-list-item-action>
                     </v-list-item>                    
                     <v-card-actions>
                         <v-btn outlined small color="#9ba5e0" @click.stop="showTaskDialog = true">+ Task</v-btn>
@@ -72,6 +75,7 @@ export default {
     },
     computed: {
         getRoomName() {
+            //TODO: add vuex to minimize api calls
             //vuex will solve this lenght =0 thing
             let result = "";
             if(this.rooms.length != 0){
@@ -88,6 +92,12 @@ export default {
                 }
                 return result;
             }
+        },
+        taskList() {
+            return this.roomDetails.value.map((item, idx) => ({
+                index: idx,
+                ...item
+            }))
         }
     },
     methods: {
@@ -99,6 +109,7 @@ export default {
                 this.tasks = resp.data;
             });
         },
+        //TODO: new tasks will not have ids.  use this for save to database.
         addTaskToRoom() {
             this.roomDetails.value.push({
                 yearScope: this.yearScope,
@@ -106,6 +117,9 @@ export default {
                 task_id: this.selectedTask.id
             });
             this.showTaskDialog = false;
+        },
+        removeTaskToRoom(index) {
+            this.roomDetails.value.splice(index, 1);
         }
     },
     created() {
