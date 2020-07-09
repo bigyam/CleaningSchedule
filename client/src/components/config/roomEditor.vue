@@ -1,8 +1,8 @@
 <template>
-    <v-row>
-        <v-card max-width flat>
-            <v-card-title class="primary white--text" style="height: 50px">
-                {{ getRoomName }}
+    <v-row dense>
+        <v-card width="100%" outlined>
+            <v-card-title class="primary white--text">
+                <h5 class="font-weight-regular">{{ getRoomName }}</h5>
             </v-card-title>
             <v-card-text>
                 <v-list dense>

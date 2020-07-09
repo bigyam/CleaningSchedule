@@ -21,7 +21,7 @@ const router = new Router({
       children: [
         {
           path: '',
-          component: () => import('@/pages/config/scheduleBuilder copy.vue') //@/pages/index.vue
+          component: () => import('@/pages/config/scheduleBuilder.vue') //@/pages/index.vue
         }
       ]
     }

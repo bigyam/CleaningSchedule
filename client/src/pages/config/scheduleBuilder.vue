@@ -8,7 +8,7 @@
             <v-card-text>
                 <v-row align="baseline">
                     <v-col>
-                        <v-btn outlined color="#9ba5e0" @click.stop="addRoom()">Add Room</v-btn>
+                        <v-btn outlined color="#9ba5e0" @click.stop="showAddRoom = true">Add Room</v-btn>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -18,74 +18,35 @@
                                 <v-chip label regular color="#9ba5e0">Daily</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <v-row v-for="room in dailyRooms" :key="room.roomId">
-                                    <v-card>
-                                        <v-card-title>
-                                            {{ matchRoomName(room) }}
-                                        </v-card-title>
-                                            
-                                        <v-card-text>
-                                            <v-list>
-                                                    <v-list-item
-                                                        v-for="(taskItem, i) in matchTaskName(room)"
-                                                        :key="i"
-                                                        @click="removeTask(taskItem)"
-                                                        >
-                                                        <v-list-item-content>
-                                                            <v-list-item-title v-text="taskItem.task_name"></v-list-item-title>
-                                                        </v-list-item-content>
-                                                    </v-list-item>
-                                            </v-list>
-
-                                        </v-card-text>
-                                        <v-card-actions>
-                                            <v-btn outlined small color="#9ba5e0" @click.stop="addTaskDialog(room, 0)">+ Task</v-btn>
-                                        </v-card-actions>
-                                    </v-card>
-                                </v-row>
-                            </v-card-text>
-                            <v-card-actions>
-                                
-                            </v-card-actions>
-                        </v-card>
-                    </v-col>
-                   <v-col>
-                        <v-card>
-                            <v-card-title>
-                                <v-chip label>Weekly</v-chip>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-row v-for="items in weeklyRooms" :key="items.index">
-                                    <v-card>
-                                        <v-card-title>
-                                            {{items.name}}
-                                        </v-card-title>
-                                    </v-card>
-                                </v-row>
+                                <room-editor v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" :yearScope="0" />
                             </v-card-text>
                         </v-card>
                     </v-col>
                     <v-col>
                         <v-card>
                             <v-card-title>
-                                <v-chip label>Monthly</v-chip>
+                                <v-chip label regular color="#9ba5e0">Weekly</v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <v-row v-for="items in monthlyRooms" :key="items.index">
-                                    <v-card>
-                                        <v-card-title>
-                                            {{items.name}}
-                                        </v-card-title>
-                                    </v-card>
-                                </v-row>
+                                <room-editor v-for="room in weeklyRooms" :key="room.roomId" :roomDetails="room" :yearScope="1" />
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col>
+                        <v-card>
+                            <v-card-title>
+                                <v-chip label regular color="#9ba5e0">Monthly</v-chip>
+                            </v-card-title>
+                            <v-card-text>
+                                <room-editor v-for="room in monthlyRooms" :key="room.roomId" :roomDetails="room" :yearScope="2" />
                             </v-card-text>
                         </v-card>
                     </v-col>
                 </v-row>
-            </v-card-text>     
+            </v-card-text>
         </v-card>
 
-        <v-dialog persistent v-model="showAddRoom" max-width="900px">
+        <v-dialog v-model="showAddRoom" max-width="900px">
             <v-card>
                 <v-card-title class="title">Add Room</v-card-title>
                 <v-card-text>
@@ -103,247 +64,128 @@
                     <v-row>
                         <v-col cols="12" class="my-n2">
                             <v-select 
-                                v-model="roomToAdd.room" 
+                                v-model="roomToAdd.roomId" 
                                 label="Room"
                                 :items="rooms"
-                                
                                 item-text='room_name'
-                                return-object>
+                                item-value='id'>
                             </v-select>
                         </v-col>
-                    </v-row>
-                    
+                    </v-row>                    
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
-                    <v-btn @click="cancel()" right>Cancel</v-btn>
-                    <v-btn color="#9ba5e0" @click="submit()" :loading="isLoading" right>Submit</v-btn>
+                    <v-btn @click="cancelAddRoom()" right>Cancel</v-btn>
+                    <v-btn color="#9ba5e0" @click="submitAddRoom()" right>Submit</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
-        <v-dialog persistent v-model="showDelete" max-width="500px">
-            <v-card>
-                <v-card-title>Delete Confirmation</v-card-title>
-                <v-card-text>
-                    <v-row>
-                        Are you sure you want to delete?
-                    </v-row>
-                </v-card-text>
-                 <v-card-actions>
-                    <v-btn color="#9ba5e0" @click="onConfirmDelete()" right>Yes</v-btn>
-                    <v-btn color="#9ba5e0" @click="showDelete = false" right>No</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-        <v-dialog persistent v-model="showAddTaskToRoom" max-width="500px">
-            <v-card>
-                <v-card-title>Add Task</v-card-title>
-                <v-card-text>
-                    <v-row>
-                        <v-col>
-                            <v-select 
-                                    v-model="selectedTask" 
-                                    label="tasks"
-                                    :items="tasks"
-                                    item-text='task_name'
-                                    return-object
-                                    >
-                            </v-select>
-                        </v-col>
-                        <v-col class="ma-0 pa-0">
-                            <v-btn color="#9ba5e0" icon outlined @click="showAddTask = true"><v-icon>add</v-icon></v-btn>
-                        </v-col>
-                        <v-col v-if="showAddTask">
-                            <v-text-field
-                                v-model="taskToAdd"
-                                label="Task Name"
-                                />
-                            <v-btn color="#9ba5e0" outlined @click="addTask()">Add</v-btn>
-                        </v-col>
-                    </v-row>
-                </v-card-text>
-                 <v-card-actions>
-                    <v-btn @click="showAddTaskToRoom = false" right>Cancel</v-btn>
-                    <v-btn color="#9ba5e0" @click="addTaskToRoom()" :loading="isLoading" right>Submit</v-btn>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-    </v-container>   
+    </v-container>
 </template>
 
 <script>
-import _ from 'lodash';
+import RoomEditor from '../.././components/config/roomEditor.vue';
 
-    export default {
-        data() { 
-            //TODO: Jul 04 - redo this page.  Arch is too messy.  rethink layout.
+export default {
+    components: {
+        RoomEditor
+    },
+    data() {
+        return {
+            //List of rooms and tasks
+            rooms: [],
+            tasks: [],
 
-            return {
-                search: null,
-                showDelete: false,
-                isLoading: false,
-                showEdit: false,
-                rooms: [],
-                yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
-                singleRoom: null, //could be unused variable
-                //dailyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master Ensuite", index:3}],
-                dailyRooms: [],
-                weeklyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master Ensuite", index:3}],
-                monthlyRooms: [{name:"Living Room", index:1}, {name:"Kitchen", index:2}, {name: "Master Ensuite", index:3}],
-                showAddRoom: false,
-                roomToAdd: {yearScope: null, room: null},
-                tasks: [],
-                selectedTask: {},
-                showAddTaskToRoom: false,
-                showAddTask: false,
-                taskToAdd: null,
-                selectedRoom: {}
-            }
-        },
-        computed: {
-            headers() {
-                let headers = [
-                    { text: 'Name', value: 'room_name', align: 'left', width: '25%' },
-                    { text: 'Complexity', value: 'complexity', align: 'left', width: '25%' },
-                    { text: 'Actions', value: 'action', align: 'left', width: '25%' },
-                ]; 
-                return headers
-            },
-        },
-        methods: {
-            fetchData() {
-                this.$service.config.getRooms().then(resp => {
-                    this.rooms = resp.data;
-                });
-                this.$service.config.getTasks().then(resp => {
-                    this.tasks = resp.data;
-                });
-                this.$service.config.getScheduleItems().then(resp => {
-                    let items = resp.data.filter(x => x.yearscope == 0);
-                    
-                    this.dailyRooms = this.groupBy(items, item => item.room_id);
-                    
-                });
-                //fetch schedule list 
-            },
-            groupBy(list, keyGetter) {
+            //holds room information
+            dailyRooms: [],
+            weeklyRooms: [],
+            monthlyRooms: [],
 
-                const array = [];
-                list.forEach((item) => {
-                     const key = keyGetter(item);
+            //Add room dialog
+            showAddRoom: false,
+            roomToAdd: {yearScope: null, roomId: null},
+            yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
+        }        
+    },
+    computed: {
 
-                     const collection = array.find(x => x.roomId == key);
-                     console.log('collection', collection);
-
-                     
-                     if (!collection) {
-                        array.push({roomId: key, value: [item]});
-                         
-                     } else {
-                         collection.value.push(item);
-                     }
-                });
-                return array;
-            },
-            matchRoomName(item) {
-                //console.log("item", item);
-                //console.log(this.rooms.find(x => x.id == item.roomId));
-                return this.rooms.find(x => x.id == item.roomId).room_name;
-            },
-            matchTaskName(item) {
-                console.log('matchtaskname room',item);
-                let tempTasks = [];
-                let tempItem = _.cloneDeep(item);
-                tempItem.value.forEach((tasks) => {
-                    tempTasks.push({roomId: tempItem.roomId, ...this.tasks.find(x => x.id == tasks.task_id)});
-                });
-                console.log('temptasks', tempTasks);
-                return tempTasks;
-            },
-            removeTask(item) {
-                console.log('item remove task', item);
-                let room = this.dailyRooms.find(x => x.roomId == item.roomId).value;
-                console.log('room', room);
-                _.remove(room, function(n) {
-                    return n.id != item.id;
-                })
-                //this.dailyRooms.splice(item.)
-
-            },
-            onEdit(item) {
-                this.selectedItem = {...item};
-                this.showEdit = true;
-            },
-            addTaskDialog(item, yearScope) {
-                //item in this case is a room object
-                this.showAddTaskToRoom = true;
-                this.selectedRoom = Object.assign(item);
-                this.selectedRoom.yearScope = yearScope;
-            },
-            addTask() {
-                let model =  {
-                    taskName: this.taskToAdd
-                };
-                this.$service.config.addTask(model).then(() => {
-                    this.fetchData();
-                    this.showAddTask = false;
-                    this.taskToAdd = null;
-                })
-            },
-            addTaskToRoom () {
-                //scheduleItem db
+    },
+    methods: {
+        fetchData() {
+            this.$service.config.getRooms().then(resp => {
+                this.rooms = resp.data;
+            });
+            this.$service.config.getTasks().then(resp => {
+                this.tasks = resp.data;
+            });
+            this.$service.config.getScheduleItems().then(resp => {
+                let daily = resp.data.filter(x => x.yearscope == 0);
+                let weekly = resp.data.filter(x => x.yearscope == 1);
+                let monthly = resp.data.filter(x => x.yearscope == 2);
+                this.dailyRooms = this.groupBy(daily, item => item.room_id);
+                this.weeklyRooms = this.groupBy(weekly, item => item.room_id);
+                this.monthlyRooms = this.groupBy(monthly, item => item.room_id);
                 
-            },
-            /** savingScheduleItem() {
-                let model = {
-                    scope: this.selectedRoom.yearScope,
-                    taskId: this.selectedTask.id,
-                    roomId: this.selectedRoom.room.id //room id does not exist
+            });
+        },
+        /** 
+         * Vuetify items only support generic arrays (no collections like maps, etc)
+         * Method to group then spit out vuetify supported collection
+         */
+        groupBy(list, keyGetter) {
+            const array = [];
+            list.forEach((item) => {
+                const key = keyGetter(item);
+
+                const collection = array.find(x => x.roomId == key);
+                console.log('collection', collection);
+                if (!collection) {
+                    array.push({roomId: key, value: [item]});
+                } else {
+                    collection.value.push(item);
                 }
-                this.$service.config.addScheduleItem(model).then(() => {
-                    this.fetchData();
-                    this.selectedRoom = {};
-                    this.selectedTask = {};
-                })
-            }**/
-            onDelete() {
-                
-            },
-            onConfirmDelete() {
-                
-            },
-            cancel() {
-                this.showAddRoom = false;
-                this.selectedItem = {};
-            },
-            submit() {
-                switch(this.roomToAdd.yearScope) {
-                    case 0:
-                        // for daily
-                        this.dailyRooms.push(this.roomToAdd);
-                        this.roomToAdd = {yearScope: null, room: null};
-                        break;
-                    case 1:
-                        // for weekly
-                        break;
-                    case 2:
-                        //for monthly
-                        break;
-                }
-                this.showAddRoom = false;
-            },
-            save() {
-                
-            },
-            onAddClick() {
-                this.showEdit = true;
-            },
-            addRoom() {
-                this.showAddRoom = true;
-            }
+            });
+            return array;
         },
-        created() {
-            this.fetchData();
+        cancelAddRoom() {
+            this.roomToAdd = {yearScope: null, roomId: null},
+            this.showAddRoom = false;
+        },
+        submitAddRoom() {
+            switch(this.roomToAdd.yearScope) {
+                case 0:
+                    this.dailyRooms.push({
+                        isNew: true,
+                        roomId: this.roomToAdd.roomId,
+                        value: [],
+                    });
+                    break;
+                case 1:
+                    this.weeklyRooms.push({
+                        isNew: true,
+                        roomId: this.roomToAdd.roomId,
+                        value: [],
+                    });
+                    break;
+                case 2:
+                    this.monthlyRooms.push({
+                        isNew: true,
+                        roomId: this.roomToAdd.roomId,
+                        value: [],
+                    });
+                    break;
+            }
+            this.roomToAdd = {yearScope: null, roomId: null};
+            this.showAddRoom = false;
         }
+    },
+    created() {
+        this.fetchData();
     }
-</script>  
+
+}
+</script>
+
+<style>
+
+</style>
