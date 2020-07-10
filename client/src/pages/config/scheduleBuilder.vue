@@ -15,7 +15,7 @@
                     <v-col>
                         <v-card>
                             <v-card-title>
-                                <v-chip label regular color="#9ba5e0">Daily</v-chip>
+                                <v-chip label regular color="#9ba5e0"><h2>Daily</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
                                 <room-editor v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" :yearScope="0" />
@@ -25,7 +25,7 @@
                     <v-col>
                         <v-card>
                             <v-card-title>
-                                <v-chip label regular color="#9ba5e0">Weekly</v-chip>
+                                <v-chip label regular color="#9ba5e0"><h2>Weekly</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
                                 <room-editor v-for="room in weeklyRooms" :key="room.roomId" :roomDetails="room" :yearScope="1" />
@@ -35,7 +35,7 @@
                     <v-col>
                         <v-card>
                             <v-card-title>
-                                <v-chip label regular color="#9ba5e0">Monthly</v-chip>
+                                <v-chip label regular color="#9ba5e0"><h2>Monthly</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
                                 <room-editor v-for="room in monthlyRooms" :key="room.roomId" :roomDetails="room" :yearScope="2" />

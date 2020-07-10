@@ -3,6 +3,8 @@ import App from './App.vue'
 import vuetify from '@/plugins/vuetify'
 import router from './router.js'
 import service from '@/service'
+import store from './store/index.js'
+
 import './plugins/axios'
 
 //import axios from 'axios'
@@ -27,6 +29,7 @@ Vue.config.productionTip = false
 
 new Vue({
 	router,
-	vuetify,
+  vuetify,
+  store,
   render: h => h(App),
 }).$mount('#app')
