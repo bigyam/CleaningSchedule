@@ -84,17 +84,18 @@
 </template>
 
 <script>
-import RoomEditor from '../.././components/config/roomEditor.vue';
+//import RoomEditor from '../.././components/config/roomEditor.vue';
+import { mapGetters } from 'vuex';
 
 export default {
-    components: {
+  /**  components: {
         RoomEditor
-    },
+    },**/
     data() {
         return {
             //List of rooms and tasks
-            rooms: [],
-            tasks: [],
+            //rooms: [],
+            //tasks: [],
 
             //holds room information
             dailyRooms: [],
@@ -108,16 +109,16 @@ export default {
         }        
     },
     computed: {
-
+        ...mapGetters(['rooms', 'tasks']),
     },
     methods: {
         fetchData() {
-            this.$service.config.getRooms().then(resp => {
+            /**this.$service.config.getRooms().then(resp => {
                 this.rooms = resp.data;
             });
             this.$service.config.getTasks().then(resp => {
                 this.tasks = resp.data;
-            });
+            });**/
             this.$service.config.getScheduleItems().then(resp => {
                 let daily = resp.data.filter(x => x.yearscope == 0);
                 let weekly = resp.data.filter(x => x.yearscope == 1);
