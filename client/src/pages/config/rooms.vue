@@ -79,6 +79,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
     export default {
         data() { 
             return {
@@ -87,11 +88,12 @@
                 isLoading: false,
                 showEdit: false,
                 selectedItem: {},
-                rooms: [],
+                //rooms: [],
                 singleRoom: null,
             }
         },
         computed: {
+            ...mapGetters(['rooms']),
             headers() {
                 let headers = [
                     { text: 'Name', value: 'room_name', align: 'left', width: '25%' },
@@ -112,9 +114,9 @@
         },
         methods: {
             fetchData() {
-                return this.$service.config.getRooms().then(resp => {
+                /**return this.$service.config.getRooms().then(resp => {
                     this.rooms = resp.data;
-                });
+                });**/
             },
             onEdit(item) {
                 this.selectedItem = {...item};
@@ -167,7 +169,7 @@
             }
         },
         created() {
-            this.fetchData();
+            //this.fetchData();
         }
     }
 </script>

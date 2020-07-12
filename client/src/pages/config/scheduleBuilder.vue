@@ -88,7 +88,7 @@
 
 <script>
 import RoomEditor from '../.././components/config/roomEditor.vue';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   components: {
@@ -115,6 +115,7 @@ export default {
         ...mapGetters(['rooms', 'tasks']),
     },
     methods: {
+        ...mapActions(['loadRooms','loadTasks']),
         fetchData() {
             /**this.$service.config.getRooms().then(resp => {
                 this.rooms = resp.data;
@@ -183,11 +184,13 @@ export default {
             this.showAddRoom = false;
         },
         saveSchedule() {
-            
+
         }
     },
     created() {
         this.fetchData();
+        this.loadRooms();
+        this.loadTasks();
     }
 
 }
