@@ -49,6 +49,7 @@
 
 <script>
 //import _ from 'lodash';
+import { mapGetters } from 'vuex';
 
 export default {
     props: {
@@ -63,8 +64,8 @@ export default {
     },
     data() {
         return {
-            rooms: [],
-            tasks: [],
+            //rooms: [],
+            //tasks: [],
             roomInstance: null,
             showTaskDialog: false,
             selectedTask: null
@@ -74,9 +75,8 @@ export default {
 
     },
     computed: {
+        ...mapGetters(['rooms', 'tasks']),
         getRoomName() {
-            //TODO: add vuex to minimize api calls
-            //vuex will solve this lenght =0 thing
             let result = "";
             if(this.rooms.length != 0){
                 result = this.rooms.find(x => x.id == this.roomDetails.roomId).room_name;
@@ -123,7 +123,7 @@ export default {
         }
     },
     created() {
-        this.fetchData();
+        //this.fetchData();
     }
 }
 </script>
