@@ -6,9 +6,12 @@
         </v-toolbar>
         <v-card outlined width="100%">
             <v-card-text>
-                <v-row align="baseline">
-                    <v-col>
+                <v-row justify="space-between">
+                    <v-col md="4">
                         <v-btn outlined color="#9ba5e0" @click.stop="showAddRoom = true">Add Room</v-btn>
+                    </v-col>
+                    <v-col md="4" class="text-right">
+                        <v-btn outlined color="#9ba5e0" @click.stop="saveSchedule()">Save</v-btn>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -84,13 +87,13 @@
 </template>
 
 <script>
-//import RoomEditor from '../.././components/config/roomEditor.vue';
+import RoomEditor from '../.././components/config/roomEditor.vue';
 import { mapGetters } from 'vuex';
 
 export default {
-  /**  components: {
+  components: {
         RoomEditor
-    },**/
+    },
     data() {
         return {
             //List of rooms and tasks
@@ -178,6 +181,9 @@ export default {
             }
             this.roomToAdd = {yearScope: null, roomId: null};
             this.showAddRoom = false;
+        },
+        saveSchedule() {
+            
         }
     },
     created() {
