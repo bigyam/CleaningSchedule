@@ -26,24 +26,30 @@ router.post('/', function (req, res) {
 	var list = [];
 	body.forEach(item => {
 		if(item.isNew) {
-			//new room, act accordingly
+			//TODO: this can be refactored to combined with bottom
+			for(var i = 0; i < item.value.length; i++){
+				ScheduleItem.insert(item.value[i].yearScope, item.value[i].task_id, item.value[i].room_id, function (err, result) {
+					if (err)
+						return res.json(err);
+					return res.json(result);
+				});
+			}
 		} else {
 			//check values for new scheduleItems on existing rooms
 			for(var i = 0; i < item.value.length; i++){
 				if(!item.value[i].id){
 					//insert new schedule item: values room_id, task_id, yearScope.
-					//check if exists
+					//check if exists. no check needed.  TODO: frontend validation to check for duplicates
+					ScheduleItem.insert(item.value[i].yearScope, item.value[i].task_id, item.value[i].room_id, function (err, result) {
+						if (err)
+							return res.json(err);
+						return res.json(result);
+					});
 				} else {
 					//check for updated values? can come from front end if changed.  IsChanged?
 				}
 			}
 		}
-	});
-
-	ScheduleItem.insert(scope, taskId, roomId, function (err, result) {
-		if (err)
-			return res.json(err);
-		return res.json(result);
 	});
 });
 /**router.post('/', function (req, res) {

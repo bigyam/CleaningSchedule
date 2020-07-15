@@ -89,6 +89,7 @@
 <script>
 import RoomEditor from '../.././components/config/roomEditor.vue';
 import { mapGetters, mapActions } from 'vuex';
+//import _ from 'lodash';
 
 export default {
   components: {
@@ -184,7 +185,19 @@ export default {
             this.showAddRoom = false;
         },
         saveSchedule() {
-
+            //TODO: deep merge then if inserts properly
+            console.log('dailyroom', this.dailyRooms);
+            console.log('weekly', this.weeklyRooms);
+            console.log('monthly', this.monthlyRooms);
+            let data = Object.assign({}, this.dailyRooms, this.monthlyRooms, this.weeklyRooms);
+            console.log('save data', data);
+            this.$service.config.addScheduleItem(data).then(() => {
+                //loading =false
+                //reload page?
+                //emit something?
+            }).catch((error) => {
+                this.$emit('error', error);
+            });
         }
     },
     created() {
