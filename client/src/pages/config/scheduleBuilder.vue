@@ -50,20 +50,24 @@
         </v-card>
 
         <v-dialog v-model="showAddRoom" max-width="900px">
+            
             <v-card>
                 <v-card-title class="title">Add Room</v-card-title>
                 <v-card-text>
+                    <v-form>
                     <v-row>
                         <v-col cols="12" class="my-n2">
-                            <v-select 
-                                v-model="roomToAdd.yearScope" 
-                                label="Scope"
-                                :items="yearScope"
-                                item-value='id'
-                                item-text='scopeName'>
-                            </v-select>
+                                <v-select 
+                                    v-model="roomToAdd.yearScope" 
+                                    label="Scope"
+                                    :rules="[rules.notNull]"
+                                    :items="yearScope"
+                                    item-value='id'
+                                    item-text='scopeName'>
+                                </v-select>
                         </v-col>
                     </v-row>
+                    </v-form>
                     <v-row>
                         <v-col cols="12" class="my-n2">
                             <v-select 
@@ -74,7 +78,8 @@
                                 item-value='id'>
                             </v-select>
                         </v-col>
-                    </v-row>                    
+                    </v-row>      
+                    
                 </v-card-text>
                 <v-card-actions>
                     <v-spacer />
@@ -89,7 +94,8 @@
 <script>
 import RoomEditor from '../.././components/config/roomEditor.vue';
 import { mapGetters, mapActions } from 'vuex';
-//import _ from 'lodash';
+//import { ValidationProvider, ValidationObserver } from 'vee-validate';
+import _ from 'lodash';
 
 export default {
   components: {
@@ -105,6 +111,10 @@ export default {
             dailyRooms: [],
             weeklyRooms: [],
             monthlyRooms: [],
+            originalData: {},
+            rules: {
+                notNull: value => value == null
+            },
 
             //Add room dialog
             showAddRoom: false,
@@ -125,6 +135,7 @@ export default {
                 this.tasks = resp.data;
             });**/
             this.$service.config.getScheduleItems().then(resp => {
+                this.originalData = _.cloneDeep(resp.data);
                 let daily = resp.data.filter(x => x.yearscope == 0);
                 let weekly = resp.data.filter(x => x.yearscope == 1);
                 let monthly = resp.data.filter(x => x.yearscope == 2);
@@ -158,7 +169,7 @@ export default {
             this.showAddRoom = false;
         },
         submitAddRoom() {
-            switch(this.roomToAdd.yearScope) {
+            /**switch(this.roomToAdd.yearScope) {
                 case 0:
                     this.dailyRooms.push({
                         isNew: true,
@@ -182,15 +193,16 @@ export default {
                     break;
             }
             this.roomToAdd = {yearScope: null, roomId: null};
-            this.showAddRoom = false;
+            this.showAddRoom = false;**/
         },
         saveSchedule() {
-            //TODO: deep merge then if inserts properly
-            console.log('dailyroom', this.dailyRooms);
-            console.log('weekly', this.weeklyRooms);
-            console.log('monthly', this.monthlyRooms);
-            let data = Object.assign({}, this.dailyRooms, this.monthlyRooms, this.weeklyRooms);
-            console.log('save data', data);
+            let data = _.cloneDeep(this.dailyRooms);
+            this.weeklyRooms.forEach((item) => {
+                data.push(item);
+            });
+            this.monthlyRooms.forEach((item) => {
+                data.push(item);
+            });
             this.$service.config.addScheduleItem(data).then(() => {
                 //loading =false
                 //reload page?
@@ -198,7 +210,7 @@ export default {
             }).catch((error) => {
                 this.$emit('error', error);
             });
-        }
+        },
     },
     created() {
         this.fetchData();
