@@ -60,7 +60,7 @@
                                 <v-select 
                                     v-model="roomToAdd.yearScope" 
                                     label="Scope"
-                                    :rules="[rules.notNull]"
+                                    :rules="yearRules"
                                     :items="yearScope"
                                     item-value='id'
                                     item-text='scopeName'
@@ -75,6 +75,7 @@
                                 v-model="roomToAdd.roomId" 
                                 label="Room"
                                 :items="rooms"
+                                :rules="roomRules"
                                 item-text='room_name'
                                 item-value='id'
                                 required>
@@ -115,9 +116,8 @@ export default {
             weeklyRooms: [],
             monthlyRooms: [],
             originalData: {},
-            rules: {
-                notNull: value => value !== null || 'Can not be null'
-            },
+            yearRules: [],
+            roomRules: [],
             //have submit form disabled/enable based on validation
 
             //Add room dialog
@@ -125,6 +125,14 @@ export default {
             roomToAdd: {yearScope: null, roomId: null},
             yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
         }        
+    },
+    watch: {
+        'roomToAdd.yearScope' () {
+            this.yearRules = [];
+        },
+        'roomToAdd.roomId' () {
+            this.roomRules = [];
+        }
     },
     computed: {
         ...mapGetters(['rooms', 'tasks']),
@@ -172,7 +180,47 @@ export default {
             this.roomToAdd = {yearScope: null, roomId: null},
             this.showAddRoom = false;
         },
+        roomExistInScope(room, scope) {
+            switch(scope){
+                case 0:
+                    for(var i = 0; i < this.dailyRooms.length; i++){
+                        if(this.dailyRooms[i].roomId == room){
+                            return true;
+                        }
+                    }
+                    console.log('false');
+                    return false;
+                case 1:
+                    for(var x = 0; x < this.weeklyRooms.length; x++){
+                        if(this.weeklyRooms[x].roomId == room){
+                            return true;
+                        }
+                    }
+                    return false;
+                case 2:
+                    for(var y = 0; y < this.monthlyRooms.length; y++){
+                        if(this.monthlyRooms[y].roomId == room){
+                            return true;
+                        }
+                    }
+                    return false;
+            }
+            
+        },
+        yearScopeValid(scope) {
+            return scope == 0 || scope == 1 || scope == 2
+        },
+        roomIsValid(room) {
+            return room == 0 || !!room
+        },
         submitAddRoom() {
+            this.yearRules = [
+                v => this.yearScopeValid(v) || 'Field is required',
+            ];
+            this.roomRules = [
+                v=> this.roomIsValid(v) || 'Field is required',
+                v => !this.roomExistInScope(v, this.roomToAdd.yearScope) || 'Room exists already'
+            ];
             this.$refs.form.validate();
             /**switch(this.roomToAdd.yearScope) {
                 case 0:
