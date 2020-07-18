@@ -50,7 +50,7 @@
         </v-card>
 
         <v-dialog v-model="showAddRoom" max-width="900px">
-            
+            <v-form ref="form">
             <v-card>
                 <v-card-title class="title">Add Room</v-card-title>
                 <v-card-text>
@@ -63,7 +63,8 @@
                                     :rules="[rules.notNull]"
                                     :items="yearScope"
                                     item-value='id'
-                                    item-text='scopeName'>
+                                    item-text='scopeName'
+                                    required>
                                 </v-select>
                         </v-col>
                     </v-row>
@@ -75,7 +76,8 @@
                                 label="Room"
                                 :items="rooms"
                                 item-text='room_name'
-                                item-value='id'>
+                                item-value='id'
+                                required>
                             </v-select>
                         </v-col>
                     </v-row>      
@@ -87,6 +89,7 @@
                     <v-btn color="#9ba5e0" @click="submitAddRoom()" right>Submit</v-btn>
                 </v-card-actions>
             </v-card>
+            </v-form>
         </v-dialog>
     </v-container>
 </template>
@@ -113,8 +116,9 @@ export default {
             monthlyRooms: [],
             originalData: {},
             rules: {
-                notNull: value => value == null
+                notNull: value => value !== null || 'Can not be null'
             },
+            //have submit form disabled/enable based on validation
 
             //Add room dialog
             showAddRoom: false,
@@ -169,6 +173,7 @@ export default {
             this.showAddRoom = false;
         },
         submitAddRoom() {
+            this.$refs.form.validate();
             /**switch(this.roomToAdd.yearScope) {
                 case 0:
                     this.dailyRooms.push({
