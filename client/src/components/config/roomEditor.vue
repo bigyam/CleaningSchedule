@@ -142,6 +142,7 @@ export default {
                         room_id: self.roomDetails.roomId,
                         task_id: self.selectedTask.id
                     });
+                    self.selectedTask = null,
                     self.showTaskDialog = false;
                     self.$emit('checkValidSave');
                 }
