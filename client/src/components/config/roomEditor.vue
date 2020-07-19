@@ -155,6 +155,7 @@ export default {
         },
         removeTaskToRoom(index) {
             this.roomDetails.value.splice(index, 1);
+            this.$emit('checkValidSave');
         }
     }
 }

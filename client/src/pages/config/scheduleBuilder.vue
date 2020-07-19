@@ -111,21 +111,15 @@ export default {
     },
     data() {
         return {
-            //List of rooms and tasks
-            //rooms: [],
-            //tasks: [],
-
-            //holds room information
+            //Holds room information
             dailyRooms: [],
             weeklyRooms: [],
             monthlyRooms: [],
-            originalData: {},
+            originalData: {},  //TODO: figure out what I added this for.  Related to save
+
             yearRules: [],
             roomRules: [],
             canSave: false,
-            //have submit form disabled/enable based on validation
-
-            //Add room dialog
             showAddRoom: false,
             roomToAdd: {yearScope: null, roomId: null},
             yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
@@ -180,19 +174,15 @@ export default {
             });
             return array;
         },
+        /**
+         * Check to see if schedule is in good shape to send save
+         */
         checkValidSaveModel() {
-            console.log('checksave');
-            console.log('monthly length', this.monthlyRooms);
             this.canSave = true;
             for(var i = 0; i < 5; i++){
-                console.log('iteration', i);
-                console.log(this.monthlyRooms[i]);
                 if(this.dailyRooms[i] && this.dailyRooms[i].value.length == 0) this.canSave = false
                 if(this.weeklyRooms[i] && this.weeklyRooms[i].value.length == 0) this.canSave = false
-                if(this.monthlyRooms[i] && this.monthlyRooms[i].value.length == 0) {
-                    console.log('checksave false');
-                    this.canSave = false;
-                }
+                if(this.monthlyRooms[i] && this.monthlyRooms[i].value.length == 0) this.canSave = false
             }
         },
         cancelAddRoom() {
@@ -271,6 +261,9 @@ export default {
             }
             });
         },
+        /**
+         * Save schedule builder room and task
+         */
         saveSchedule() {
             let data = _.cloneDeep(this.dailyRooms);
             this.weeklyRooms.forEach((item) => {

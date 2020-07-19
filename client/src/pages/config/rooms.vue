@@ -10,7 +10,7 @@
                     <v-btn large color="primary" outlined @click="onAddClick">Add</v-btn>
                 </v-row>
                 
-                  <v-data-table
+                <v-data-table
                     :headers="headers"
                     :items="indexedRoomList"   
                     :loading="isLoading" 
@@ -88,7 +88,6 @@ import { mapGetters } from 'vuex';
                 isLoading: false,
                 showEdit: false,
                 selectedItem: {},
-                //rooms: [],
                 singleRoom: null,
             }
         },
