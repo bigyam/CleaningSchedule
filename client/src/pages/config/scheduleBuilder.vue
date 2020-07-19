@@ -11,8 +11,11 @@
                         <v-btn outlined color="#9ba5e0" @click.stop="showAddRoom = true">Add Room</v-btn>
                     </v-col>
                     <v-col md="4" class="text-right">
-                        <v-btn outlined color="#9ba5e0" @click.stop="saveSchedule()">Save</v-btn>
+                        <v-btn :disabled="!canSave" outlined color="#9ba5e0" @click.stop="saveSchedule()">Save</v-btn>
                     </v-col>
+                </v-row>
+                <v-row justify="center">
+                    <v-alert type="warning" :value="!canSave"> There are rooms with empty tasks. </v-alert>
                 </v-row>
                 <v-row>
                     <v-col>
@@ -21,7 +24,7 @@
                                 <v-chip label regular color="#9ba5e0"><h2>Daily</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <room-editor v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" :yearScope="0" />
+                                <room-editor v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" :yearScope="0" @checkValidSave="checkValidSaveModel"/>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -31,7 +34,7 @@
                                 <v-chip label regular color="#9ba5e0"><h2>Weekly</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <room-editor v-for="room in weeklyRooms" :key="room.roomId" :roomDetails="room" :yearScope="1" />
+                                <room-editor v-for="room in weeklyRooms" :key="room.roomId" :roomDetails="room" :yearScope="1" @checkValidSave="checkValidSaveModel" />
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -41,7 +44,7 @@
                                 <v-chip label regular color="#9ba5e0"><h2>Monthly</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <room-editor v-for="room in monthlyRooms" :key="room.roomId" :roomDetails="room" :yearScope="2" />
+                                <room-editor v-for="room in monthlyRooms" :key="room.roomId" :roomDetails="room" :yearScope="2" @checkValidSave="checkValidSaveModel" />
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -50,7 +53,7 @@
         </v-card>
 
         <v-dialog v-model="showAddRoom" max-width="900px">
-            <v-form ref="form">
+            <v-form ref="AddRoomForm">
             <v-card>
                 <v-card-title class="title">Add Room</v-card-title>
                 <v-card-text>
@@ -73,6 +76,7 @@
                         <v-col cols="12" class="my-n2">
                             <v-select 
                                 v-model="roomToAdd.roomId" 
+                                :disabled="!yearScopeValid(roomToAdd.yearScope)"
                                 label="Room"
                                 :items="rooms"
                                 :rules="roomRules"
@@ -118,6 +122,7 @@ export default {
             originalData: {},
             yearRules: [],
             roomRules: [],
+            canSave: false,
             //have submit form disabled/enable based on validation
 
             //Add room dialog
@@ -167,7 +172,6 @@ export default {
                 const key = keyGetter(item);
 
                 const collection = array.find(x => x.roomId == key);
-                console.log('collection', collection);
                 if (!collection) {
                     array.push({roomId: key, value: [item]});
                 } else {
@@ -176,8 +180,24 @@ export default {
             });
             return array;
         },
+        checkValidSaveModel() {
+            console.log('checksave');
+            console.log('monthly length', this.monthlyRooms);
+            this.canSave = true;
+            for(var i = 0; i < 5; i++){
+                console.log('iteration', i);
+                console.log(this.monthlyRooms[i]);
+                if(this.dailyRooms[i] && this.dailyRooms[i].value.length == 0) this.canSave = false
+                if(this.weeklyRooms[i] && this.weeklyRooms[i].value.length == 0) this.canSave = false
+                if(this.monthlyRooms[i] && this.monthlyRooms[i].value.length == 0) {
+                    console.log('checksave false');
+                    this.canSave = false;
+                }
+            }
+        },
         cancelAddRoom() {
-            this.roomToAdd = {yearScope: null, roomId: null},
+            this.roomToAdd = {yearScope: null, roomId: null};
+            this.$refs.AddRoomForm.resetValidation();
             this.showAddRoom = false;
         },
         roomExistInScope(room, scope) {
@@ -188,7 +208,6 @@ export default {
                             return true;
                         }
                     }
-                    console.log('false');
                     return false;
                 case 1:
                     for(var x = 0; x < this.weeklyRooms.length; x++){
@@ -205,7 +224,6 @@ export default {
                     }
                     return false;
             }
-            
         },
         yearScopeValid(scope) {
             return scope == 0 || scope == 1 || scope == 2
@@ -221,32 +239,37 @@ export default {
                 v=> this.roomIsValid(v) || 'Field is required',
                 v => !this.roomExistInScope(v, this.roomToAdd.yearScope) || 'Room exists already'
             ];
-            this.$refs.form.validate();
-            /**switch(this.roomToAdd.yearScope) {
-                case 0:
-                    this.dailyRooms.push({
-                        isNew: true,
-                        roomId: this.roomToAdd.roomId,
-                        value: [],
-                    });
-                    break;
-                case 1:
-                    this.weeklyRooms.push({
-                        isNew: true,
-                        roomId: this.roomToAdd.roomId,
-                        value: [],
-                    });
-                    break;
-                case 2:
-                    this.monthlyRooms.push({
-                        isNew: true,
-                        roomId: this.roomToAdd.roomId,
-                        value: [],
-                    });
-                    break;
+            let self = this
+            setTimeout(function () {
+                if(self.$refs.AddRoomForm.validate()) {
+                switch(self.roomToAdd.yearScope) {
+                    case 0:
+                        self.dailyRooms.push({
+                            isNew: true,
+                            roomId: self.roomToAdd.roomId,
+                            value: [],
+                        });
+                        break;
+                    case 1:
+                        self.weeklyRooms.push({
+                            isNew: true,
+                            roomId: self.roomToAdd.roomId,
+                            value: [],
+                        });
+                        break;
+                    case 2:
+                        self.monthlyRooms.push({
+                            isNew: true,
+                            roomId: self.roomToAdd.roomId,
+                            value: [],
+                        });
+                        break;
+                }
+                self.roomToAdd = {yearScope: null, roomId: null};
+                self.checkValidSaveModel();
+                self.showAddRoom = false;
             }
-            this.roomToAdd = {yearScope: null, roomId: null};
-            this.showAddRoom = false;**/
+            });
         },
         saveSchedule() {
             let data = _.cloneDeep(this.dailyRooms);
@@ -269,6 +292,7 @@ export default {
         this.fetchData();
         this.loadRooms();
         this.loadTasks();
+        this.checkValidSaveModel()
     }
 
 }

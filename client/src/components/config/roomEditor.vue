@@ -23,25 +23,31 @@
                 </v-list>
             </v-card-text>
         </v-card>
-        <v-dialog v-model="showTaskDialog">
+        <v-dialog v-model="showTaskDialog" max-width="900px">
             <v-card>
+                <v-form ref="AddTaskForm">
                 <v-card-title>Add Task</v-card-title>
                 <v-card-text>
                     <v-row>
                         <v-col>
                             <v-select 
                                 v-model="selectedTask" 
-                                label="tasks"
+                                label="Tasks"
+                                :rules="taskFieldRules"
                                 :items="tasks"
                                 item-text='task_name'
+                                required
                                 return-object
                                 />
                         </v-col>
-                        <v-col class="ma-0 pa-0">
-                            <v-btn color="#9ba5e0" icon outlined @click="addTaskToRoom()"><v-icon>add</v-icon></v-btn>
-                        </v-col>
                     </v-row>
                 </v-card-text>
+                <v-card-actions>
+                    <v-spacer />
+                    <v-btn @click="cancelAddTask()" right>Cancel</v-btn>
+                    <v-btn color="#9ba5e0" @click="addTaskToRoom()" right>Submit</v-btn>
+                </v-card-actions>
+                </v-form>
             </v-card>
         </v-dialog>
     </v-row>
@@ -68,11 +74,14 @@ export default {
             //tasks: [],
             roomInstance: null,
             showTaskDialog: false,
-            selectedTask: null
+            selectedTask: null,
+            taskFieldRules: []
         }
     },
-    watcher: {
-
+    watch: {
+        'selectedTask' () {
+            this.taskFieldRules = [];
+        }
     },
     computed: {
         ...mapGetters(['rooms', 'tasks']),
@@ -109,21 +118,44 @@ export default {
                 this.tasks = resp.data;
             });
         },
+        taskExistInRoom(task) {
+            if(task){
+                for(var i = 0; i < this.roomDetails.value.length; i++){
+                    if(this.roomDetails.value[i].task_id == task.id){
+                        return true;
+                    }
+                }
+            }
+            return false;
+        },
         //TODO: new tasks will not have ids.  use this for save to database.
         addTaskToRoom() {
-            this.roomDetails.value.push({
-                yearScope: this.yearScope,
-                room_id: this.roomDetails.roomId,
-                task_id: this.selectedTask.id
-            });
+            this.taskFieldRules = [
+                v => !!v || 'Field is required',
+                v => !this.taskExistInRoom(v) || 'Task already exist in room'
+            ];
+            let self = this
+            setTimeout(function () {                    
+                if(self.$refs.AddTaskForm.validate()){
+                    self.roomDetails.value.push({
+                        yearScope: self.yearScope,
+                        room_id: self.roomDetails.roomId,
+                        task_id: self.selectedTask.id
+                    });
+                    self.showTaskDialog = false;
+                    self.$emit('checkValidSave');
+                }
+            })
+            
+        },
+        cancelAddTask() {
+            this.selectedTask = null,
+            this.$refs.AddTaskForm.resetValidation();
             this.showTaskDialog = false;
         },
         removeTaskToRoom(index) {
             this.roomDetails.value.splice(index, 1);
         }
-    },
-    created() {
-        //this.fetchData();
     }
 }
 </script>
