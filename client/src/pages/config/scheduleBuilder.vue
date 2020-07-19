@@ -115,7 +115,7 @@ export default {
             dailyRooms: [],
             weeklyRooms: [],
             monthlyRooms: [],
-            originalData: {},  //TODO: figure out what I added this for.  Related to save
+            originalData: {},  //TODO: figure out what I added this for.  Related to save.  OH for removed tasks.  Save will need to check for removed tasks and send in deletes for those
 
             yearRules: [],
             roomRules: [],
