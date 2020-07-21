@@ -123,6 +123,7 @@ export default {
             showAddRoom: false,
             roomToAdd: {yearScope: null, roomId: null},
             yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
+            testVar: [],
         }        
     },
     watch: {
@@ -265,6 +266,11 @@ export default {
          * Save schedule builder room and task
          */
         saveSchedule() {
+            
+            //let dataToRemove = [];
+            //change data to be [].  Then loop through each daily, weekly, monthly rooms and push each value in.
+            //data will then be less nested and wont' need to do double for loop in line 284
+            
             let data = _.cloneDeep(this.dailyRooms);
             this.weeklyRooms.forEach((item) => {
                 data.push(item);
@@ -272,6 +278,20 @@ export default {
             this.monthlyRooms.forEach((item) => {
                 data.push(item);
             });
+            this.testVar = data;
+            console.log('hello');
+            this.originalData.forEach((item) => {
+                for(var i = 0; i < data.length; i++) {
+                    for(var j = 0; j < data[i].value; j++){
+
+                    }
+                    //if()
+                    /**if(!item.value[i].id && this.originalData.some(x => x.room_id == item.value[i].room_id && x.task_id == item.value[i].task_id && x.yearScope == item.value[i].yearScope)){
+                        dataToRemove.push(item.value[i]);
+                    }**/
+                }
+            });
+            /**
             this.$service.config.addScheduleItem(data).then(() => {
                 //loading =false
                 //reload page?
@@ -279,6 +299,11 @@ export default {
             }).catch((error) => {
                 this.$emit('error', error);
             });
+            this.$service.config.deleteScheduleItem(dataToRemove).then(() => {
+                //promise all?
+            }).catch((error) => {
+                this.$emit('error', error);
+            });**/
         },
     },
     created() {
