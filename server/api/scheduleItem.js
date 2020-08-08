@@ -25,7 +25,15 @@ router.post('/', function (req, res) {
 	var body = req.body;
 	var list = [];
 	body.forEach(item => {
-		if(item.isNew) {
+		if(!item.id){
+			//parameter for insert is wrong.  redo
+			ScheduleItem.insert(item.value[i].yearScope, item.value[i].task_id, item.value[i].room_id, function (err, result) {
+				if (err)
+					return res.json(err);
+				return res.json(result);
+			});
+		}
+		/**if(item.isNew) {
 			//TODO: this can be refactored to combined with bottom
 			for(var i = 0; i < item.value.length; i++){
 				ScheduleItem.insert(item.value[i].yearScope, item.value[i].task_id, item.value[i].room_id, function (err, result) {
@@ -49,7 +57,7 @@ router.post('/', function (req, res) {
 					//check for updated values? can come from front end if changed.  IsChanged?
 				}
 			}
-		}
+		}**/
 	});
 });
 /**router.post('/', function (req, res) {

@@ -267,31 +267,33 @@ export default {
          */
         saveSchedule() {
             
-            //let dataToRemove = [];
-            //change data to be [].  Then loop through each daily, weekly, monthly rooms and push each value in.
-            //data will then be less nested and wont' need to do double for loop in line 284
-            
-            let data = _.cloneDeep(this.dailyRooms);
+            let dataToRemove = [];
+            //completed object model.  dataToRemove and data will be an array of scheduleItems
+            //issues with delete.
+            let data = [];
+            this.dailyRooms.forEach((item) => {
+                item.value.forEach((scheduleItem) => {
+                    data.push(scheduleItem);
+                })
+            });
             this.weeklyRooms.forEach((item) => {
-                data.push(item);
+                item.value.forEach((scheduleItem) => {
+                    data.push(scheduleItem);
+                })
             });
             this.monthlyRooms.forEach((item) => {
-                data.push(item);
+                item.value.forEach((scheduleItem) => {
+                    data.push(scheduleItem);
+                })
             });
-            this.testVar = data;
-            console.log('hello');
+            
             this.originalData.forEach((item) => {
-                for(var i = 0; i < data.length; i++) {
-                    for(var j = 0; j < data[i].value; j++){
-
-                    }
-                    //if()
-                    /**if(!item.value[i].id && this.originalData.some(x => x.room_id == item.value[i].room_id && x.task_id == item.value[i].task_id && x.yearScope == item.value[i].yearScope)){
-                        dataToRemove.push(item.value[i]);
-                    }**/
+                if(!data.some(x => x.id == item.id)){
+                    dataToRemove.push(item);
                 }
             });
-            /**
+            this.testVar = _.cloneDeep(dataToRemove);
+            console.log('testVar', this.testVar);
             this.$service.config.addScheduleItem(data).then(() => {
                 //loading =false
                 //reload page?
@@ -303,7 +305,7 @@ export default {
                 //promise all?
             }).catch((error) => {
                 this.$emit('error', error);
-            });**/
+            });
         },
     },
     created() {
