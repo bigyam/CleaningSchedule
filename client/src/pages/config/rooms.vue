@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
     export default {
         data() { 
             return {
@@ -112,6 +112,7 @@ import { mapGetters } from 'vuex';
             }
         },
         methods: {
+            ...mapActions(['loadRooms']),
             fetchData() {
                 /**return this.$service.config.getRooms().then(resp => {
                     this.rooms = resp.data;
@@ -169,6 +170,7 @@ import { mapGetters } from 'vuex';
         },
         created() {
             //this.fetchData();
+            this.loadRooms();
         }
     }
 </script>
