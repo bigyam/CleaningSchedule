@@ -33,6 +33,14 @@ class ScheduleItem {
 			});
 	}
 
+	static updateIsActive (itemId, colValue, callback) {
+		db.query('UPDATE scheduleItems SET isActive = $2 WHERE id = $1', [itemId, colValue], function (err, res) {
+			if (err.error)
+				return callback(err);
+			callback(res);
+		});
+	}
+
 	static delete (itemId, callback) {
 		db.query('DELETE FROM scheduleItems WHERE id = $1', [itemId], function (err, res) {
 			if (err.error)

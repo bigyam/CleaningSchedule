@@ -270,6 +270,7 @@ export default {
             let dataToRemove = [];
             let data = [];
             //TODO: edit.  Currently deleete removes the item completely, and if i readd the same thing, it creates a brand new item.  for 'last complete purposes' not ideal.
+            //completed setting isactive to false when removing.  fetch needs to not pick up isactive false
             this.dailyRooms.forEach((item) => {
                 item.value.forEach((scheduleItem) => {
                     data.push(scheduleItem);
@@ -286,8 +287,10 @@ export default {
                 })
             });
             
+            //check for removed data
             this.originalData.forEach((item) => {
                 if(!data.some(x => x.id == item.id)){
+                    item.isActive = false;
                     dataToRemove.push(item);
                 }
             });
@@ -307,7 +310,6 @@ export default {
                     this.$emit('error', error);
                 });
             }
-            
         },
     },
     created() {

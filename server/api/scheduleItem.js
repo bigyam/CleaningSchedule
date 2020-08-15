@@ -51,7 +51,8 @@ router.post('/delete', function (req, res) {
 	var body = req.body;
 
 	body.forEach(item => {
-		ScheduleItem.delete(item.id, function (err, result) {
+		console.log('item', item);
+		ScheduleItem.updateIsActive(item.id, item.isactive, function (err, result) {
 			if(err)
 				return res.json(err);
 			return res.json(result);
