@@ -41,8 +41,8 @@ export default{
 		updateScheduleItem(data) {
 			return axios.put(routes.scheduleItem, data);
 		},
-		deleteScheduleItem(itemId) {
-			return axios.delete(routes.scheduleItem, {data: {itemId}});
+		deleteScheduleItem(data) {
+			return axios.post(routes.scheduleItem + '/delete', data);
 		}
 	}
 }

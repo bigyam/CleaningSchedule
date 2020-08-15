@@ -268,9 +268,8 @@ export default {
         saveSchedule() {
             
             let dataToRemove = [];
-            //completed object model.  dataToRemove and data will be an array of scheduleItems
-            //issues with delete.
             let data = [];
+            //TODO: edit.  Currently deleete removes the item completely, and if i readd the same thing, it creates a brand new item.  for 'last complete purposes' not ideal.
             this.dailyRooms.forEach((item) => {
                 item.value.forEach((scheduleItem) => {
                     data.push(scheduleItem);
@@ -292,20 +291,23 @@ export default {
                     dataToRemove.push(item);
                 }
             });
-            this.testVar = _.cloneDeep(dataToRemove);
-            console.log('testVar', this.testVar);
-            this.$service.config.addScheduleItem(data).then(() => {
-                //loading =false
-                //reload page?
-                //emit something?
-            }).catch((error) => {
-                this.$emit('error', error);
-            });
-            this.$service.config.deleteScheduleItem(dataToRemove).then(() => {
-                //promise all?
-            }).catch((error) => {
-                this.$emit('error', error);
-            });
+            if(data.length > 0){
+                this.$service.config.addScheduleItem(data).then(() => {
+                    //loading =false
+                    //reload page?
+                    //emit something?
+                }).catch((error) => {
+                    this.$emit('error', error);
+                });
+            }
+            if(dataToRemove.length > 0) {
+                this.$service.config.deleteScheduleItem(dataToRemove).then(() => {
+                    //promise all?
+                }).catch((error) => {
+                    this.$emit('error', error);
+                });
+            }
+            
         },
     },
     created() {

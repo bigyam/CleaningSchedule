@@ -23,54 +23,17 @@ router.get('/:itemId', function(req, res) {
 
 router.post('/', function (req, res) {
 	var body = req.body;
-	var list = [];
+
 	body.forEach(item => {
 		if(!item.id){
-			//parameter for insert is wrong.  redo
-			ScheduleItem.insert(item.value[i].yearScope, item.value[i].task_id, item.value[i].room_id, function (err, result) {
+			ScheduleItem.insert(item.yearScope, item.task_id, item.room_id, function (err, result) {
 				if (err)
 					return res.json(err);
 				return res.json(result);
 			});
 		}
-		/**if(item.isNew) {
-			//TODO: this can be refactored to combined with bottom
-			for(var i = 0; i < item.value.length; i++){
-				ScheduleItem.insert(item.value[i].yearScope, item.value[i].task_id, item.value[i].room_id, function (err, result) {
-					if (err)
-						return res.json(err);
-					return res.json(result);
-				});
-			}
-		} else {
-			//check values for new scheduleItems on existing rooms
-			for(var i = 0; i < item.value.length; i++){
-				if(!item.value[i].id){
-					//insert new schedule item: values room_id, task_id, yearScope.
-					//check if exists. no check needed.  TODO: frontend validation to check for duplicates
-					ScheduleItem.insert(item.value[i].yearScope, item.value[i].task_id, item.value[i].room_id, function (err, result) {
-						if (err)
-							return res.json(err);
-						return res.json(result);
-					});
-				} else {
-					//check for updated values? can come from front end if changed.  IsChanged?
-				}
-			}
-		}**/
 	});
 });
-/**router.post('/', function (req, res) {
-	var scope = req.body.scope;
-	var taskId = req.body.taskId;
-	var roomId = req.body.roomId;
-
-	ScheduleItem.insert(scope, taskId, roomId, function (err, result) {
-		if (err)
-			return res.json(err);
-		return res.json(result);
-	});
-});**/
 
 router.put('/', function(req, res) {
 	var itemId = req.body.itemId;
@@ -84,14 +47,16 @@ router.put('/', function(req, res) {
 	});
 });
 
-router.delete('/', function (req, res) {
-	var itemId = req.body.itemId;
+router.post('/delete', function (req, res) {
+	var body = req.body;
 
-	ScheduleItem.delete(itemId, function (err, result) {
-		if(err)
-			return res.json(err);
-		return res.json(result);
-	});
+	body.forEach(item => {
+		ScheduleItem.delete(item.id, function (err, result) {
+			if(err)
+				return res.json(err);
+			return res.json(result);
+		});
+	})
 });
 
 module.exports = router;
