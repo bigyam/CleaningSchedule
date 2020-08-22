@@ -1,6 +1,13 @@
 const db = require('../database');
 
 class ScheduleItem {
+	static retrieveAllActive(callback) {
+		db.query('SELECT id, yearScope, isActive, isComplete, lastComplete, task_id, room_id from scheduleItems WHERE isActive = true ORDER BY id DESC', function (err, res) {
+			if (err.error)
+				return callback(err);
+			callback(res);
+		});
+	}
 	static retrieveAll(callback) {
 		db.query('SELECT id, yearScope, isActive, isComplete, lastComplete, task_id, room_id from scheduleItems ORDER BY id DESC', function (err, res) {
 			if (err.error)

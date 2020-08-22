@@ -4,7 +4,7 @@ var ScheduleItem = require('../models/scheduleItem');
 var router = express.Router();
 
 router.get('/', function (req, res) {
-	ScheduleItem.retrieveAll(function(err, item) {
+	ScheduleItem.retrieveAllActive(function(err, items) {
 		if(err)
 			return res.json(err);
 		return res.json(items);
@@ -23,16 +23,31 @@ router.get('/:itemId', function(req, res) {
 
 router.post('/', function (req, res) {
 	var body = req.body;
-
-	body.forEach(item => {
-		if(!item.id){
-			ScheduleItem.insert(item.yearScope, item.task_id, item.room_id, function (err, result) {
-				if (err)
-					return res.json(err);
-				return res.json(result);
-			});
-		}
-	});
+	var existing;
+	ScheduleItem.retrieveAll(function(items) {
+		//TODO: test whether adding a existing (isActive = false) item to database will set to true, rather than create new one. 
+		existing = items;
+		console.log('existing1', existing);
+		body.forEach(item => {
+			if(!item.id){
+				console.log('item', item);
+				let isItemExist = existing.find(x => x.yearscope == item.yearScope && x.room_id == item.room_id && x.task_id == item.task_id);
+				if(isItemExist){
+					ScheduleItem.updateIsActive(isItemExist.id, true, function (err, result) {
+						if(err)
+							return res.json(err);
+						return res.json(result);
+					});
+				} else {
+					ScheduleItem.insert(item.yearScope, item.task_id, item.room_id, function (err, result) {
+						if (err)
+							return res.json(err);
+						return res.json(result);
+					});
+				}			
+			}
+		});
+	});	
 });
 
 router.put('/', function(req, res) {
@@ -51,7 +66,6 @@ router.post('/delete', function (req, res) {
 	var body = req.body;
 
 	body.forEach(item => {
-		console.log('item', item);
 		ScheduleItem.updateIsActive(item.id, item.isactive, function (err, result) {
 			if(err)
 				return res.json(err);
