@@ -24,7 +24,7 @@
                                 <v-chip label regular color="#9ba5e0"><h2>Daily</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <room-editor v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" :yearScope="0" @checkValidSave="checkValidSaveModel"/>
+                                <room-editor v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" :yearScope="0" @checkValidSave="checkValidSaveModel" @removeRoom="removeRoom"/>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -34,7 +34,7 @@
                                 <v-chip label regular color="#9ba5e0"><h2>Weekly</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <room-editor v-for="room in weeklyRooms" :key="room.roomId" :roomDetails="room" :yearScope="1" @checkValidSave="checkValidSaveModel" />
+                                <room-editor v-for="room in weeklyRooms" :key="room.roomId" :roomDetails="room" :yearScope="1" @checkValidSave="checkValidSaveModel" @removeRoom="removeRoom"/>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -44,7 +44,7 @@
                                 <v-chip label regular color="#9ba5e0"><h2>Monthly</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
-                                <room-editor v-for="room in monthlyRooms" :key="room.roomId" :roomDetails="room" :yearScope="2" @checkValidSave="checkValidSaveModel" />
+                                <room-editor v-for="room in monthlyRooms" :key="room.roomId" :roomDetails="room" :yearScope="2" @checkValidSave="checkValidSaveModel" @removeRoom="removeRoom"/>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -174,6 +174,23 @@ export default {
                 }
             });
             return array;
+        },
+        //TODO: removing room.  But currently POST api having issues running multi insert and/or multi updates.  each insert/update returning an http header.  Need to be one.
+        removeRoom(value) {
+            let index;
+            let roomToFind;
+            console.log('value', value);
+            switch(value.yearScope){
+                case 0:
+                    roomToFind = this.dailyRooms.find(x => x.roomId == value.roomId);
+                    index = this.dailyRooms.indexOf(roomToFind);
+                    this.dailyRooms.splice(index, 1); //this removes correct room
+                    //console.log('index', index);
+                    break;
+                case 1:
+                    break;
+                case 2:
+            }
         },
         /**
          * Check to see if schedule is in good shape to send save

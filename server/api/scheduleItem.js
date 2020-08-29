@@ -24,6 +24,8 @@ router.get('/:itemId', function(req, res) {
 router.post('/', function (req, res) {
 	var body = req.body;
 	var existing;
+	let toUpdate = [];
+	let toInsert = [];
 	ScheduleItem.retrieveAll(function(items) {
 		//TODO: test whether adding a existing (isActive = false) item to database will set to true, rather than create new one. 
 		existing = items;
@@ -33,17 +35,19 @@ router.post('/', function (req, res) {
 				console.log('item', item);
 				let isItemExist = existing.find(x => x.yearscope == item.yearScope && x.room_id == item.room_id && x.task_id == item.task_id);
 				if(isItemExist){
-					ScheduleItem.updateIsActive(isItemExist.id, true, function (err, result) {
+					toUpdate.push(isItemExist);
+					/**ScheduleItem.updateIsActive(isItemExist.id, true, function (err, result) {
 						if(err)
 							return res.json(err);
 						return res.json(result);
-					});
+					});**/
 				} else {
-					ScheduleItem.insert(item.yearScope, item.task_id, item.room_id, function (err, result) {
+					toInsert.push(item);
+					/**ScheduleItem.insert(item.yearScope, item.task_id, item.room_id, function (err, result) {
 						if (err)
 							return res.json(err);
 						return res.json(result);
-					});
+					});**/
 				}			
 			}
 		});

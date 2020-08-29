@@ -3,6 +3,8 @@
         <v-card width="100%" outlined>
             <v-card-title class="primary white--text">
                 <h5 class="font-weight-regular">{{ getRoomName }}</h5>
+                <v-spacer/>
+                <v-btn color="#9ba5e0" icon outlined @click="removeRoom()"><v-icon>remove</v-icon></v-btn>
             </v-card-title>
             <v-card-text>
                 <v-list dense>
@@ -54,7 +56,7 @@
 </template>
 
 <script>
-//import _ from 'lodash';
+import _ from 'lodash';
 import { mapGetters } from 'vuex';
 
 export default {
@@ -117,6 +119,11 @@ export default {
             this.$service.config.getTasks().then(resp => {
                 this.tasks = resp.data;
             });
+        },
+        removeRoom() {
+            var roomToRemove = _.cloneDeep(this.roomDetails);
+            roomToRemove.yearScope = this.yearScope;
+            this.$emit('removeRoom', roomToRemove);
         },
         taskExistInRoom(task) {
             if(task){
