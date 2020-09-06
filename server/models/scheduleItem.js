@@ -55,6 +55,18 @@ class ScheduleItem {
 			callback(res);
 		});
 	}
+	
+	static updateAndInsert(updateList, insertList) {
+		updateList.forEach(item => {
+			delete item.yearscope;
+			delete item.lastcomplete;
+			delete item.task_id;
+			delete item.room_id;
+		});
+		console.log('updatelist', updateList);
+		console.log('insertlist', insertList);
+		db.queryMulti(insertList, updateList);
+	}
 }
 
 module.exports = ScheduleItem;

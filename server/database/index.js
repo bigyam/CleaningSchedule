@@ -74,42 +74,105 @@ class Database {
 
 			})
 		});
+
+
 	}**/
 	//trying with async/await
-	queryMulti (insertStatement, updateStatement) {
-		async() 
+	//added in buidlstatement for update items.  multip update
+	//test by daily masterbedroom sweep and vacuum adding.  then save.  
+	queryMulti (insert, update) {
+		console.log('query multi');
+		(async() => {
+			const client = await this._pool.connect();
+			try{
+				console.log('try');
+				await client.query('BEGIN');
+				if(insert)	await client.query(this.buildStatementInsert('INSERT INTO scheduleItems (yearScope, isActive, isComplete, lastComplete, task_id, room_id) VALUES ', insert));
+				if(update) 	await client.query(this.buildStatement('WITH subquery (id, isactive, iscomplete) AS (VALUES ', update));
+				await client.query('COMMIT');					
+			} catch (e) {
+				console.log('catch');
+				await client.query('ROLLBACK');
+				throw e;
+			} finally {
+				console.log('finally');
+				client.release();
+			}				
+		})().catch(e => console.error(e.stack));
+		console.log('query multi end');
 	}
+
 	end () {
 		this._pool.end();
 	}
 
-	//TODO: this may not work.  
-	buildStatement (insert, rowsInsert, update, rowsUpdate) {
-		const paramsInsert = []
-		const chunksInsert = []
-		const paramsUpdate = []
-		const chunksUpdate = []
-		rowsInsert.forEach(row => {
-			const valueClauseInsert = []
+	buildStatementInsert(insert, rows) {
+		const params = [];
+		const chunks = [];
+		
+		rows.forEach(row => {
+			const valueClause = []
 			Object.keys(row).forEach(p => {
-				paramsInsert.push(row[p])
-				valueClauseInsert.push('$' + paramsInsert.length)
+				params.push(row[p])
+				valueClause.push('$' + params.length)
 			})
-			chunksInsert.push('(' + valueClauseInsert.join(', ') + ')')
-		})
-		rowsUpdate.forEach(row => {
-			const valueClauseUpdate = []
-			Object.keys(row).forEach(p => {
-				paramsUpdate.push(row[p])
-				valueClauseUpdate.push('$' + paramsUpdate.length)
-			})
-			chunksUpdate.push('(' + valueClauseUpdate.join(', ') + ')')
+			chunks.push('(' + valueClause.join(', ') + ')')
 		})
 		return {
-			text: insert + chunksInsert.join(', '),
-			values: paramsInsert
+			text: insert + chunks.join(', '),
+			values: params
 		}
-	} 
+	}
+
+
+	buildStatementUpdate(update, rows) {
+		/**
+		 *rows = [{
+			 * itemId = 10
+			 * name = Brian
+			 * Age = 21
+			 * },
+			 * {
+			 *  itemId = 11
+			 * colName = Aaron
+			 * colVal = 29
+			 * }]
+			 * 
+			 * 
+			 * UPDATE e
+				SET name = t.name, age = t.age
+				FROM dbo.employee e
+				JOIN (
+					SELECT itemId = '$1, name = $2, age = $3
+					UNION ALL
+					SELECT itemId = '$4, name = $5, age = $6
+				) t ON t.itemId = e.itemId
+
+WITH subquery (id, isactive, iscomplete) AS (VALUES (69, false, true), (70, false, true))
+UPDATE scheduleitems
+SET isactive = subquery.isactive, iscomplete = subquery.iscomplete
+FROM subquery
+WHERE scheduleitems.id = subquery.id
+			 */
+		const params = [];
+		const chunks = [];
+		
+		rows.forEach(row => {
+			const valueClause = []
+			Object.keys(row).forEach(p => {
+				params.push(row[p])
+				valueClause.push('$' + params.length)
+			})
+			chunks.push('(' + valueClause.join(', ') + ')')
+		})
+		console.log('======================update statement: ', update + chunks.join(', ') + ')' + 'UPDATE scheduleitems SET isactive = subquery.isactive, iscomplete = subquery.iscomplete FROM subquery WHERE scheduleitems.id = subquery.id');
+		return {
+			text: update + chunks.join(', ') + ')' + 'UPDATE scheduleitems SET isactive = subquery.isactive, iscomplete = subquery.iscomplete FROM subquery WHERE scheduleitems.id = subquery.id',
+			values: params
+		}
+	}
+
+
 }
 
 module.exports = new Database();

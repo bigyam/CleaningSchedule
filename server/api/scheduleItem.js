@@ -35,6 +35,7 @@ router.post('/', function (req, res) {
 				console.log('item', item);
 				let isItemExist = existing.find(x => x.yearscope == item.yearScope && x.room_id == item.room_id && x.task_id == item.task_id);
 				if(isItemExist){
+					//if(!isItemExist.isactive) isItemExist.isactive = true;
 					toUpdate.push(isItemExist);
 					/**ScheduleItem.updateIsActive(isItemExist.id, true, function (err, result) {
 						if(err)
@@ -51,6 +52,9 @@ router.post('/', function (req, res) {
 				}			
 			}
 		});
+		console.log('toUpdate: ', toUpdate);
+		console.log('toInsert: ', toInsert);
+		ScheduleItem.updateAndInsert(toUpdate, toInsert);
 	});	
 });
 
