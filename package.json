@@ -4,8 +4,7 @@
   "description": "Cleaning Schedule App",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon server",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "dev": "npm run client",
     "client": "npm run serve --prefix client",
     "start": "node server",
     "postbuild": "cd client && npm run build"

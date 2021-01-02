@@ -1,15 +1,15 @@
 import axios from 'axios'
 import routes from './routes'
 
-axios.defaults.baseURL = 'http://localhost:5000'
+axios.defaults.baseURL = 'http://localhost:8082/cleaningschedule'
 
 export default{
 	config: {
 		getRooms() {
-			return axios.get(routes.room);
+			return axios.get(routes.room + '/all');
 		},
 		getSingleRoom(roomId) {
-			return axios.get(routes.singleRoom, {params: {roomId}});
+			return axios.get(routes.room, {params: {roomId}});
 		},
 		addRoom(data) {
 			return axios.post(routes.room, data);
@@ -18,10 +18,10 @@ export default{
 			return axios.put(routes.room, data);
 		},
 		deleteRoom(roomId) {
-			return axios.delete(routes.room, {data:{roomId}});
+			return axios.delete(routes.room, {data:{roomId}}); //param?
 		},
 		getTasks() {
-			return axios.get(routes.task);
+			return axios.get(routes.task + '/all');
 		},
 		addTask(data) {
 			return axios.post(routes.task, data);
@@ -33,7 +33,7 @@ export default{
 			return axios.delete(routes.task, {data:{taskId}});
 		},
 		getScheduleItems() {
-			return axios.get(routes.scheduleItem);
+			return axios.get(routes.scheduleItem + '/all');
 		},
 		addScheduleItem(data) {
 			return axios.post(routes.scheduleItem, data);
