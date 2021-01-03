@@ -42,7 +42,7 @@ export default{
 			return axios.put(routes.scheduleItem, data);
 		},
 		deleteScheduleItem(data) {
-			return axios.post(routes.scheduleItem + '/delete', data);
+			return axios.delete(routes.scheduleItem, {data});
 		}
 	}
 }

@@ -37,7 +37,7 @@
                                 label="Tasks"
                                 :rules="taskFieldRules"
                                 :items="tasks"
-                                item-text='task_name'
+                                item-text='name'
                                 required
                                 return-object
                                 />
@@ -90,7 +90,7 @@ export default {
         getRoomName() {
             let result = "";
             if(this.rooms.length != 0){
-                result = this.rooms.find(x => x.id == this.roomDetails.roomId).room_name;
+                result = this.rooms.find(x => x.id == this.roomDetails.roomId).name;
             }
             return result;
         },
@@ -99,7 +99,7 @@ export default {
             return function (item) {
                 let result;
                 if(vm.tasks.length != 0){
-                    result = vm.tasks.find(x => x.id == item.task_id).task_name;
+                    result = vm.tasks.find(x => x.id == item.task_id).name;
                 }
                 return result;
             }

@@ -80,7 +80,7 @@
                                 label="Room"
                                 :items="rooms"
                                 :rules="roomRules"
-                                item-text='room_name'
+                                item-text='name'
                                 item-value='id'
                                 required>
                             </v-select>
@@ -115,8 +115,7 @@ export default {
             dailyRooms: [],
             weeklyRooms: [],
             monthlyRooms: [],
-            originalData: {},  //TODO: figure out what I added this for.  Related to save.  OH for removed tasks.  Save will need to check for removed tasks and send in deletes for those
-
+            originalData: [],
             yearRules: [],
             roomRules: [],
             canSave: false,
@@ -148,9 +147,9 @@ export default {
             });**/
             this.$service.config.getScheduleItems().then(resp => {
                 this.originalData = _.cloneDeep(resp.data);
-                let daily = resp.data.filter(x => x.yearscope == 0);
-                let weekly = resp.data.filter(x => x.yearscope == 1);
-                let monthly = resp.data.filter(x => x.yearscope == 2);
+                let daily = resp.data.filter(x => x.yearScope == 0);
+                let weekly = resp.data.filter(x => x.yearScope == 1);
+                let monthly = resp.data.filter(x => x.yearScope == 2);
                 this.dailyRooms = this.groupBy(daily, item => item.room_id);
                 this.weeklyRooms = this.groupBy(weekly, item => item.room_id);
                 this.monthlyRooms = this.groupBy(monthly, item => item.room_id);
@@ -175,21 +174,25 @@ export default {
             });
             return array;
         },
-        //TODO: removing room.  But currently POST api having issues running multi insert and/or multi updates.  each insert/update returning an http header.  Need to be one.
         removeRoom(value) {
             let index;
             let roomToFind;
-            console.log('value', value);
             switch(value.yearScope){
                 case 0:
                     roomToFind = this.dailyRooms.find(x => x.roomId == value.roomId);
                     index = this.dailyRooms.indexOf(roomToFind);
-                    this.dailyRooms.splice(index, 1); //this removes correct room
-                    //console.log('index', index);
+                    this.dailyRooms.splice(index, 1);
                     break;
                 case 1:
+                    roomToFind = this.weeklyRooms.find(x => x.roomId == value.roomId);
+                    index = this.weeklyRooms.indexOf(roomToFind);
+                    this.weeklyRooms.splice(index, 1);
                     break;
                 case 2:
+                    roomToFind = this.monthlyRooms.find(x => x.roomId == value.roomId);
+                    index = this.monthlyRooms.indexOf(roomToFind);
+                    this.monthlyRooms.splice(index, 1);
+                    break;
             }
         },
         /**

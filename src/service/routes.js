@@ -4,5 +4,4 @@ let routes = {
 	scheduleItem: '/scheduleitem',
 	task: '/task'
 }
-//TODO: remove node.js webservice from here.
 export default routes;
