@@ -36,7 +36,7 @@
                     <v-row>
                         <v-col cols="12" class="my-n2">
                             <v-text-field 
-                                v-model="selectedItem.room_name" 
+                                v-model="selectedItem.name" 
                                 label="Name">
                             </v-text-field>
                         </v-col>
@@ -95,7 +95,7 @@ import { mapGetters, mapActions } from 'vuex';
             ...mapGetters(['rooms']),
             headers() {
                 let headers = [
-                    { text: 'Name', value: 'room_name', align: 'left', width: '25%' },
+                    { text: 'Name', value: 'name', align: 'left', width: '25%' },
                     { text: 'Complexity', value: 'complexity', align: 'left', width: '25%' },
                     { text: 'Actions', value: 'action', align: 'left', width: '25%' },
                 ]; 
@@ -141,7 +141,7 @@ import { mapGetters, mapActions } from 'vuex';
                 if(Object.prototype.hasOwnProperty.call(this.selectedItem, 'index')) {
                     let model = {
                         roomId: this.selectedItem.id,
-                        roomName: this.selectedItem.room_name,
+                        roomName: this.selectedItem.name,
                         roomComplexity: this.selectedItem.complexity
                     };
                     this.$service.config.updateRoom(model).then(() => {
@@ -151,7 +151,7 @@ import { mapGetters, mapActions } from 'vuex';
                     })
                 } else {
                     let model = {
-                        roomName: this.selectedItem.room_name,
+                        roomName: this.selectedItem.name,
                         roomComplexity: this.selectedItem.complexity,
                     }
                     this.$service.config.addRoom(model).then(() => {
