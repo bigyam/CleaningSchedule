@@ -1,7 +1,7 @@
 <template>
     <v-container>
         <v-toolbar text dense color="primary white--text">
-            <v-toolbar-title>Rooms</v-toolbar-title>
+            <v-toolbar-title>Tasks</v-toolbar-title>
             <v-spacer></v-spacer>        
         </v-toolbar>
         <v-card>
@@ -12,15 +12,12 @@
                 
                 <v-data-table
                     :headers="headers"
-                    :items="indexedRoomList"   
+                    :items="indexedTaskList"   
                     :loading="isLoading" 
                     fixed-header
                     height="500"     
                     >
                     
-                    <template v-slot:item.complexity="{ item }">
-                        {{ matchComplexity(item) }}
-                    </template>
                     <template v-slot:item.action="{ item }">
                         <v-btn class="mx-1" icon outlined color="#9ba5e0" @click.stop="onEdit(item)"><v-icon>edit</v-icon></v-btn>
                         <v-btn class="mx-1" icon outlined color="#9ba5e0" @click.stop="onDelete(item)" title='Delete'><v-icon>delete</v-icon></v-btn> 
@@ -31,7 +28,7 @@
 
         <v-dialog persistent v-model="showEdit" max-width="900px">
             <v-card>
-                <v-card-title class="title">Room Details</v-card-title>
+                <v-card-title class="title">Tasks Details</v-card-title>
                 <v-card-text>
                     <v-row>
                         <v-col cols="12" class="my-n2">
@@ -39,17 +36,6 @@
                                 v-model="selectedItem.name" 
                                 label="Name">
                             </v-text-field>
-                        </v-col>
-                    </v-row>
-                    <v-row>
-                        <v-col cols="12" class="my-n2">
-                            <v-select 
-                                v-model="selectedItem.complexity" 
-                                label="Complexity"
-                                :items="complexity"
-                                item-value='id'
-                                item-text='label'>
-                            </v-select>
                         </v-col>
                     </v-row>
                     
@@ -88,33 +74,28 @@ import { mapGetters, mapActions } from 'vuex';
                 isLoading: false,
                 showEdit: false,
                 selectedItem: {},
-                singleRoom: null,
             }
         },
         computed: {
-            ...mapGetters(['rooms']),
+            ...mapGetters(['tasks']),
             headers() {
                 let headers = [
                     { text: 'Name', value: 'name', align: 'left', width: '25%' },
-                    { text: 'Complexity', value: 'complexity', align: 'left', width: '25%' },
                     { text: 'Actions', value: 'action', align: 'left', width: '25%' },
                 ]; 
                 return headers
             },
-            complexity() {
-                return [ {id: 1, label: "Low"},{id: 2, label: "Medium"},{id: 3, label: "High"},]
-            },
-            indexedRoomList() {
-                return this.rooms.map((item, idx) => ({
+            indexedTaskList() {
+                return this.tasks.map((item, idx) => ({
                     index: idx,
                     ...item
                 }))
             }
         },
         methods: {
-            ...mapActions(['loadRooms']),
+            ...mapActions(['loadTasks']),
             fetchData() {
-                this.loadRooms(true);
+                this.loadTasks(true);
             },
             onEdit(item) {
                 this.selectedItem = {...item};
@@ -125,8 +106,8 @@ import { mapGetters, mapActions } from 'vuex';
                 this.selectedItem = item;
             },
             onConfirmDelete() {
-                this.$service.config.deleteRoom(this.selectedItem.id).then(() => {
-                        this.rooms.splice(this.selectedItem.index,1);
+                this.$service.config.deleteTask(this.selectedItem.id).then(() => {
+                        this.tasks.splice(this.selectedItem.index,1);
                         this.showDelete = false;
                         this.selectedItem = {};
                 })
@@ -140,27 +121,23 @@ import { mapGetters, mapActions } from 'vuex';
                     let model = {
                         id: this.selectedItem.id,
                         name: this.selectedItem.name,
-                        complexity: this.selectedItem.complexity
                     };
-                    this.$service.config.updateRoom(model).then(() => {
+                    this.$service.config.updateTask(model).then(() => {
                         this.fetchData();
                         this.showEdit = false;
                         this.selectedItem = {};
                     })
                 } else {
                     let model = {
+                        id: this.selectedItem.id,
                         name: this.selectedItem.name,
-                        complexity: this.selectedItem.complexity,
                     }
-                    this.$service.config.addRoom(model).then(() => {
+                    this.$service.config.addTask(model).then(() => {
                         this.fetchData();
                         this.showEdit = false;
                         this.selectedItem = {};        
                     })
                 }
-            },
-            matchComplexity(item) {
-                return this.complexity.find(x => x.id == item.complexity).label;
             },
             onAddClick() {
                 this.showEdit = true;
@@ -168,7 +145,7 @@ import { mapGetters, mapActions } from 'vuex';
         },
         created() {
             //this.fetchData();
-            this.loadRooms();
+            this.loadTasks();
         }
     }
 </script>

@@ -17,8 +17,8 @@ export default{
 		updateRoom(data) {
 			return axios.put(routes.room, data);
 		},
-		deleteRoom(roomId) {
-			return axios.delete(routes.room, {data:{roomId}}); //param?
+		deleteRoom(id) {
+			return axios.delete(routes.room, {params:{id}}); //param?
 		},
 		getTasks() {
 			return axios.get(routes.task + '/all');
@@ -29,8 +29,8 @@ export default{
 		updateTask(data) {
 			return axios.put(routes.task, data);
 		},
-		deleteTask(taskId) {
-			return axios.delete(routes.task, {data:{taskId}});
+		deleteTask(id) {
+			return axios.delete(routes.task, {params:{id}});
 		},
 		getScheduleItems() {
 			return axios.get(routes.scheduleItem + '/all');
