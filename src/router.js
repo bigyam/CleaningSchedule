@@ -20,8 +20,24 @@ const router = new Router({
       // All child components will be applied with corresponding layout component
       children: [
         {
-          path: '',
-          component: () => import('@/pages/config/scheduleBuilder.vue') //@/pages/index.vue
+          path: '/config/rooms',
+          name: 'room-config',
+          component: () => import('@/pages/config/rooms.vue')
+        },
+        {
+          path: '/config/tasks',
+          name: 'task-config',
+          component: () => import('@/pages/config/tasks.vue')
+        },
+        {
+          path: '/config/scheduleBuilder',
+          name: 'schedule-config',
+          component: () => import('@/pages/config/scheduleBuilder.vue')
+        },
+        {
+          path: '/',
+          name: 'home',
+          component: () => import('@/pages/index.vue') //@/pages/index.vue
         }
       ]
     }

@@ -6,7 +6,14 @@ export default {
         //userName: { type: String, default: "" },
         //lastLogin: { type: Date , default: null},
         //isAuthenticated: { type: Boolean, default: false },
-        menuItems: { type: Array, default: () => [] },
+        menuItems: { type: Array, default: () => [
+            {title: "Schedule", to: {name: 'home'}},
+            {title: "Config", children: [
+                {title: "Schedule Builder", to: {name: 'schedule-config'}},
+                {title: "Rooms", to: {name: 'room-config'}},
+                {title: "Tasks", to: {name: 'task-config'}}          
+            ]}
+        ] },
         //languageAltCb: { type: Function, default: () => { } },
         appName: { type: String, default: "" },
         showSearch: { type: Boolean, default: true },
