@@ -21,16 +21,6 @@
                     <v-col>
                         <v-card>
                             <v-card-title>
-                                <v-chip label regular color="#9ba5e0"><h2>Daily</h2></v-chip>
-                            </v-card-title>
-                            <v-card-text>
-                                <room-editor v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" :yearScope="0" @checkValidSave="checkValidSaveModel" @removeRoom="removeRoom"/>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                    <v-col>
-                        <v-card>
-                            <v-card-title>
                                 <v-chip label regular color="#9ba5e0"><h2>Weekly</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
@@ -45,6 +35,16 @@
                             </v-card-title>
                             <v-card-text>
                                 <room-editor v-for="room in monthlyRooms" :key="room.roomId" :roomDetails="room" :yearScope="2" @checkValidSave="checkValidSaveModel" @removeRoom="removeRoom"/>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                                        <v-col>
+                        <v-card>
+                            <v-card-title>
+                                <v-chip label regular color="#9ba5e0"><h2>Others</h2></v-chip>
+                            </v-card-title>
+                            <v-card-text>
+                                <room-editor v-for="room in otherRooms" :key="room.roomId" :roomDetails="room" :yearScope="0" @checkValidSave="checkValidSaveModel" @removeRoom="removeRoom"/>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -112,7 +112,7 @@ export default {
     data() {
         return {
             //Holds room information
-            dailyRooms: [],
+            otherRooms: [],
             weeklyRooms: [],
             monthlyRooms: [],
             originalData: [],
@@ -121,7 +121,7 @@ export default {
             canSave: false,
             showAddRoom: false,
             roomToAdd: {yearScope: null, roomId: null},
-            yearScope: [{id: 0, scopeName: "Daily"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
+            yearScope: [{id: 0, scopeName: "Others"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
             testVar: [],
         }        
     },
@@ -147,10 +147,10 @@ export default {
             });**/
             this.$service.config.getScheduleItems().then(resp => {
                 this.originalData = _.cloneDeep(resp.data);
-                let daily = resp.data.filter(x => x.yearScope == 0);
+                let other = resp.data.filter(x => x.yearScope == 0);
                 let weekly = resp.data.filter(x => x.yearScope == 1);
                 let monthly = resp.data.filter(x => x.yearScope == 2);
-                this.dailyRooms = this.groupBy(daily, item => item.room_id);
+                this.otherRooms = this.groupBy(other, item => item.room_id);
                 this.weeklyRooms = this.groupBy(weekly, item => item.room_id);
                 this.monthlyRooms = this.groupBy(monthly, item => item.room_id);
                 
@@ -179,9 +179,9 @@ export default {
             let roomToFind;
             switch(value.yearScope){
                 case 0:
-                    roomToFind = this.dailyRooms.find(x => x.roomId == value.roomId);
-                    index = this.dailyRooms.indexOf(roomToFind);
-                    this.dailyRooms.splice(index, 1);
+                    roomToFind = this.otherRooms.find(x => x.roomId == value.roomId);
+                    index = this.otherRooms.indexOf(roomToFind);
+                    this.otherRooms.splice(index, 1);
                     break;
                 case 1:
                     roomToFind = this.weeklyRooms.find(x => x.roomId == value.roomId);
@@ -201,7 +201,7 @@ export default {
         checkValidSaveModel() {
             this.canSave = true;
             for(var i = 0; i < 5; i++){
-                if(this.dailyRooms[i] && this.dailyRooms[i].value.length == 0) this.canSave = false
+                if(this.otherRooms[i] && this.otherRooms[i].value.length == 0) this.canSave = false
                 if(this.weeklyRooms[i] && this.weeklyRooms[i].value.length == 0) this.canSave = false
                 if(this.monthlyRooms[i] && this.monthlyRooms[i].value.length == 0) this.canSave = false
             }
@@ -214,8 +214,8 @@ export default {
         roomExistInScope(room, scope) {
             switch(scope){
                 case 0:
-                    for(var i = 0; i < this.dailyRooms.length; i++){
-                        if(this.dailyRooms[i].roomId == room){
+                    for(var i = 0; i < this.otherRooms.length; i++){
+                        if(this.otherRooms[i].roomId == room){
                             return true;
                         }
                     }
@@ -255,7 +255,7 @@ export default {
                 if(self.$refs.AddRoomForm.validate()) {
                 switch(self.roomToAdd.yearScope) {
                     case 0:
-                        self.dailyRooms.push({
+                        self.otherRooms.push({
                             isNew: true,
                             roomId: self.roomToAdd.roomId,
                             value: [],
@@ -291,7 +291,7 @@ export default {
             let data = [];
             //TODO: edit. when adding item that is existing in db, set item to true rather than create new item.
             
-            this.dailyRooms.forEach((item) => {
+            this.otherRooms.forEach((item) => {
                 item.value.forEach((scheduleItem) => {
                     data.push(scheduleItem);
                 })
