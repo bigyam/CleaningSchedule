@@ -10,6 +10,22 @@ let config = {
 
 const _axios = axios.create(config);
 
+// //testing interceptor method to deal with needing to refresh on login
+// _axios.interceptors.request.use(
+//     function(config) {
+//         const token = localStorage.getItem("user");
+//         console.log('token: ', token);
+//         if (token) {
+//             config.headers["Authorization"] = 'Bearer ' + token;
+//         }
+//         return config;
+//         },
+//     function(error) {
+//         console.log('interceptor error')
+//         return Promise.reject(error);
+//     }  
+// );
+
 Plugin.install = function(Vue) {
   Vue.axios = _axios;
   window.axios = _axios;

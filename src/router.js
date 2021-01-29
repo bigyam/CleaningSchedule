@@ -12,36 +12,63 @@ const RouterLayout = createRouterLayout(layout => {
 const router = new Router({
 	routes: [
     {
-      path: '/',
+        path: '/',
 
       // Pass <RouterLayout> as the route component
-      component: RouterLayout,
+        component: RouterLayout,
 
       // All child components will be applied with corresponding layout component
-      children: [
+        children: [
         {
-          path: '/config/rooms',
-          name: 'room-config',
-          component: () => import('@/pages/config/rooms.vue')
+            path: '/config/rooms',
+            name: 'room-config',
+            component: () => import('@/pages/config/rooms.vue')
         },
         {
-          path: '/config/tasks',
-          name: 'task-config',
-          component: () => import('@/pages/config/tasks.vue')
+            path: '/config/tasks',
+            name: 'task-config',
+            component: () => import('@/pages/config/tasks.vue')
         },
         {
-          path: '/config/scheduleBuilder',
-          name: 'schedule-config',
-          component: () => import('@/pages/config/scheduleBuilder.vue')
+            path: '/config/scheduleBuilder',
+            name: 'schedule-config',
+            component: () => import('@/pages/config/scheduleBuilder.vue')
         },
         {
-          path: '/',
-          name: 'home',
-          component: () => import('@/pages/index.vue') //@/pages/index.vue
-        }
-      ]
+            path: '/',
+            name: 'home',
+            component: () => import('@/pages/index.vue') //@/pages/index.vue
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: () => import('@/pages/Login.vue') //@/pages/index.vue
+        },
+        {
+            path: '/register',
+            name: 'register',
+            component: () => import('@/pages/Register.vue') //@/pages/index.vue
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: () => import('@/pages/Profile.vue') //@/pages/index.vue
+        }]
+    }]
+});
+
+router.beforeEach((to, from, next) => {
+    const publicPages = ['/login', '/register', '/profile'];
+    const authRequired = !publicPages.includes(to.path);
+    const loggedIn = localStorage.getItem('user');
+
+    // trying to access a restricted page + not logged in
+    // redirect to login page
+    if (authRequired && !loggedIn) {
+        next('/login');
+    } else {
+        next();
     }
-  ]
 });
 
 export default router;

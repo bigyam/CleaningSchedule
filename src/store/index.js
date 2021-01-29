@@ -1,12 +1,16 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import * as types from './mutation-type'
+import * as types from './mutation-type';
+import { auth } from './auth.module';
 
 Vue.use(Vuex)
 
 let api = new Vue()
 
 export default new Vuex.Store({
+    modules: {
+        auth
+    },
     state: {
         //list of available rooms to select from
         rooms: [],
