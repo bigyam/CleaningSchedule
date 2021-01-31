@@ -2,29 +2,28 @@
 
 import Vue from 'vue';
 import axios from "axios";
+import store from '../store/index';
+
+axios.interceptors.request.use(
+    function(config) {
+        const user = store.state.auth.user;
+        if (user) {
+            config.headers["Authorization"] = 'Bearer ' + user.token;
+        }
+        return config;
+    },
+    function(error) {
+        return Promise.reject(error);
+    }  
+);
 
 // Full config:  https://github.com/axios/axios#request-config
-let config = {
-  baseURL: 'http://localhost:5000'
+let configuration = {
+  baseURL: 'http://localhost:5000',
+  params: {}
 };
 
-const _axios = axios.create(config);
-
-// //testing interceptor method to deal with needing to refresh on login
-// _axios.interceptors.request.use(
-//     function(config) {
-//         const token = localStorage.getItem("user");
-//         console.log('token: ', token);
-//         if (token) {
-//             config.headers["Authorization"] = 'Bearer ' + token;
-//         }
-//         return config;
-//         },
-//     function(error) {
-//         console.log('interceptor error')
-//         return Promise.reject(error);
-//     }  
-// );
+const _axios = axios.create(configuration);
 
 Plugin.install = function(Vue) {
   Vue.axios = _axios;
