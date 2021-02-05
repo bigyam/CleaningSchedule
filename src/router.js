@@ -60,7 +60,7 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     const publicPages = ['/login', '/register', '/profile'];
     const authRequired = !publicPages.includes(to.path);
-    const loggedIn = localStorage.getItem('user');
+    const loggedIn = localStorage.getItem('user'); //TODO: this doesn't check if existing 'user' has expired token.
 
     // trying to access a restricted page + not logged in
     // redirect to login page

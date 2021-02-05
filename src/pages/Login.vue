@@ -62,13 +62,14 @@ export default {
             ];
             this.passwordRules = [v => !!v || 'Password is required'];
             this.loading = true;
+            //TODO: this validate needs to use let self = this.  or doens't work properly
             if (this.$refs.loginForm.validate()) {
                 if (this.user.username && this.user.password) {
                     this.$store.dispatch("auth/login", this.user).then(
                         () => {
                             this.$router.push("/profile");
                         },
-                        (error) => {
+                        (error) => { //TODO: error is rando code.  fix this.
                             this.loading = false;
                             this.message =
                                 (error.response && error.response.data) ||

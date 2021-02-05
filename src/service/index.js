@@ -1,9 +1,7 @@
 import axios from 'axios'
 import routes from './routes'
-//import authHeader from './auth-header'
 
 axios.defaults.baseURL = 'http://localhost:8082/cleaningschedule'
-//axios.defaults.headers = authHeader();
 
 export default{
 	config: {

@@ -73,22 +73,26 @@ export default {
             ];
             this.message = '';
             this.submitted = true;
-            if (this.$refs.registerForm.validate()) {
-                if (this.user.username && this.user.password && this.user.email) {
-                    this.$store.dispatch('auth/register', this.user).then(
-                        data => {
-                        this.message = data.message;
-                        this.successful = true;
-                        },
-                        error => {
-                        this.message =
-                            (error.response && error.response.data) ||
-                            error.message ||
-                            error.toString();
-                        this.successful = false;
-                    });
+            let self = this;
+            setTimeout(function() {            
+                if (self.$refs.registerForm.validate()) {
+                    if (self.user.username && self.user.password && self.user.email) {
+                        self.$store.dispatch('auth/register', self.user).then(
+                            () => {
+                                self.successful = true;
+                                self.$router.push("/login");
+                            },
+                            error => { //TODO: error is rando code.  not used
+                                self.message =
+                                    (error.response && error.response.data) ||
+                                    error.message ||
+                                    error.toString();
+                                self.successful = false;
+                            }
+                        );
+                    }
                 }
-            }
+            });
         }
                 
     }
