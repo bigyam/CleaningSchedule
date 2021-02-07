@@ -10,16 +10,6 @@
                     <v-col>
                         <v-card>
                             <v-card-title>
-                                <v-chip label regular color="#9ba5e0"><h2>Daily</h2></v-chip>
-                            </v-card-title>
-                            <v-card-text>
-                                <task-list v-for="room in dailyRooms" :key="room.roomId" :roomDetails="room" :yearScope="0"/>
-                            </v-card-text>
-                        </v-card>
-                    </v-col>
-                    <v-col>
-                        <v-card>
-                            <v-card-title>
                                 <v-chip label regular color="#9ba5e0"><h2>Weekly</h2></v-chip>
                             </v-card-title>
                             <v-card-text>
@@ -34,6 +24,16 @@
                             </v-card-title>
                             <v-card-text>
                                 <task-list v-for="room in monthlyRooms" :key="room.roomId" :roomDetails="room" :yearScope="2"/>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col>
+                        <v-card>
+                            <v-card-title>
+                                <v-chip label regular color="#9ba5e0"><h2>Others</h2></v-chip>
+                            </v-card-title>
+                            <v-card-text>
+                                <task-list v-for="room in otherRooms" :key="room.roomId" :roomDetails="room" :yearScope="0"/>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -53,7 +53,7 @@ export default {
     },
     data() {
         return {
-            dailyRooms: [],
+            otherRooms: [],
             weeklyRooms: [],
             monthlyRooms: [],
         }
@@ -72,10 +72,10 @@ export default {
             });**/
             this.$service.config.getScheduleItems().then(resp => {
                 this.originalData = _.cloneDeep(resp.data);
-                let daily = resp.data.filter(x => x.yearScope == 0);
+                let other = resp.data.filter(x => x.yearScope == 0);
                 let weekly = resp.data.filter(x => x.yearScope == 1);
                 let monthly = resp.data.filter(x => x.yearScope == 2);
-                this.dailyRooms = this.groupBy(daily, item => item.room_id);
+                this.otherRooms = this.groupBy(other, item => item.room_id);
                 this.weeklyRooms = this.groupBy(weekly, item => item.room_id);
                 this.monthlyRooms = this.groupBy(monthly, item => item.room_id);
                 

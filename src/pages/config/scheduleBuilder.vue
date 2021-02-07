@@ -121,7 +121,7 @@ export default {
             canSave: false,
             showAddRoom: false,
             roomToAdd: {yearScope: null, roomId: null},
-            yearScope: [{id: 0, scopeName: "Others"}, {id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},],
+            yearScope: [{id: 1, scopeName: "Weekly"}, {id: 2, scopeName: "Monthly"},{id: 0, scopeName: "Others"}],
             testVar: [],
         }        
     },
@@ -314,6 +314,7 @@ export default {
                     dataToRemove.push(item);
                 }
             });
+            //console.dir("data: " + JSON.stringify(data));
             if(data.length > 0){
                 this.$service.config.addScheduleItem(data).then(() => {
                     //loading =false

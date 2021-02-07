@@ -8,10 +8,10 @@
                 <v-list dense>
                     <v-list-item 
                         v-for="(taskItem, i) in taskList"
-                        :key="i"
-                        @click.stop="showDetails(taskItem)">
+                        :key="i">
                         <v-list-item-content>
-                            <v-list-item-title v-text="getTaskName(taskItem)">
+                            <v-list-item-title v-text="getTaskName(taskItem)"
+                                @click.stop="showDetails(taskItem)">
                             </v-list-item-title>
                         </v-list-item-content>
                         <v-list-item-action>
@@ -31,6 +31,9 @@
                     Task: {{ taskDetails != null ? getTaskName(taskDetails) : 'empty object'}}<br>
                     Last Completed: {{ taskDetails != null ? 
                                             taskDetails.lastComplete != null ? taskDetails.lastComplete : 'lastComplete is null'
+                                            : 'task Details is null' }} <br>
+                    Last Completed By: {{ taskDetails != null ? 
+                                            taskDetails.lastCompletedBy != null ? taskDetails.lastCompletedBy : 'lastCompletedBy is null'
                                             : 'task Details is null' }}
                 </v-card-text>
             </v-card>            
@@ -107,7 +110,15 @@ export default {
             return false;
         },
         toggleComplete(item) {
-            console.log('item: ' + item.isComplete);
+            console.log(item);
+            let model = {
+                id: item.id,
+                isComplete: item.isComplete,
+                lastCompletedBy: this.$store.state.auth.user.id
+            };
+            this.$service.config.toggleComplete(model).then(() => {
+                //TODO: add in what to do for completed apis promise calls.
+            });
         },
         showDetails(item) {
             this.taskDetails = item;

@@ -38,7 +38,7 @@ export default{
 		addScheduleItem(data) {
 			return axios.post(routes.scheduleItem, data);
 		},
-		updateScheduleItem(data) {
+		toggleComplete(data) {
 			return axios.put(routes.scheduleItem, data);
 		},
 		deleteScheduleItem(data) {

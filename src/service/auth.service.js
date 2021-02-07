@@ -26,7 +26,6 @@ class AuthService {
             username: user.username,
             email: user.email,
             password: user.password
-            //TODO: do i have to add roles here?  roles: ["admin", "user"]
         });
     }
 }
