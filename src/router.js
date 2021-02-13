@@ -60,8 +60,14 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
     const publicPages = ['/login', '/register', '/profile'];
     const authRequired = !publicPages.includes(to.path);
-    const loggedIn = localStorage.getItem('user'); //TODO: this doesn't check if existing 'user' has expired token.
-
+    var loggedIn = localStorage.getItem('user');
+    if(loggedIn) {
+        var jwt =  parseJwt(JSON.parse(loggedIn).token);
+        if (jwt.exp < Date.now()/1000) {
+            localStorage.removeItem('user');
+            loggedIn = null;
+        }
+    }
     // trying to access a restricted page + not logged in
     // redirect to login page
     if (authRequired && !loggedIn) {
@@ -70,5 +76,17 @@ router.beforeEach((to, from, next) => {
         next();
     }
 });
+
+//parses jwt token.  gets {sub: , iat: , exp, }
+function parseJwt (token) {
+    
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    console.log("+++++++: " + jsonPayload + " ===== " + Date.now()/1000)
+    return JSON.parse(jsonPayload);
+}
 
 export default router;
