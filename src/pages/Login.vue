@@ -62,26 +62,29 @@ export default {
             ];
             this.passwordRules = [v => !!v || 'Password is required'];
             this.loading = true;
+            let self = this;
             //TODO: this validate needs to use let self = this.  or doens't work properly
-            if (this.$refs.loginForm.validate()) {
-                if (this.user.username && this.user.password) {
-                    this.$store.dispatch("auth/login", this.user).then(
-                        () => {
-                            this.$router.push("/profile");
-                        },
-                        (error) => { //TODO: error is rando code.  fix this.
-                            this.loading = false;
-                            this.message =
-                                (error.response && error.response.data) ||
-                                error.message ||
-                                error.toString();
-                        }
-                    );
+            setTimeout(function() {
+                if (self.$refs.loginForm.validate()) {
+                    if (self.user.username && self.user.password) {
+                        self.$store.dispatch("auth/login", self.user).then(
+                            () => {
+                                self.$router.push("/profile");
+                            },
+                            (error) => { //TODO: error is rando code.  fix this.
+                                self.loading = false;
+                                self.message =
+                                    (error.response && error.response.data) ||
+                                    error.message ||
+                                    error.toString();
+                            }
+                        );
+                    }
+                } else {
+                    self.loading = false;
+                    return;
                 }
-            } else {
-                this.loading = false;
-                return;
-            }
+            })
         },
     },
 };
