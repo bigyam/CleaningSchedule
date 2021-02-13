@@ -116,9 +116,7 @@ export default {
                 isComplete: item.isComplete,
                 lastCompletedBy: this.$store.state.auth.user.id
             };
-            this.$service.config.toggleComplete(model).then(() => {
-                //TODO: add in what to do for completed apis promise calls.
-            });
+            this.$service.config.toggleComplete(model);
         },
         showDetails(item) {
             this.taskDetails = item;

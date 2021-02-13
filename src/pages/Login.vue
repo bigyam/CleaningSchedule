@@ -63,7 +63,6 @@ export default {
             this.passwordRules = [v => !!v || 'Password is required'];
             this.loading = true;
             let self = this;
-            //TODO: this validate needs to use let self = this.  or doens't work properly
             setTimeout(function() {
                 if (self.$refs.loginForm.validate()) {
                     if (self.user.username && self.user.password) {

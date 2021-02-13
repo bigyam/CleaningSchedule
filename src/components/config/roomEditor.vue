@@ -135,7 +135,6 @@ export default {
             }
             return false;
         },
-        //TODO: new tasks will not have ids.  use this for save to database.
         addTaskToRoom() {
             this.taskFieldRules = [
                 v => !!v || 'Field is required',
