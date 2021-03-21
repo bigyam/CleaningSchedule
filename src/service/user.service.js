@@ -1,7 +1,8 @@
 import axios from 'axios';
 import authHeader from './auth-header';
 
-const API_URL = 'http://localhost:8082/cleaningschedule/test/';
+const API_URL = 'http://142.93.157.84:8082/cleaningschedule/test/';
+//TODO: prod/local
 
 class UserService {
   getPublicContent() {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8082/cleaningschedule/auth/'; //TODO: make this have prod/dev.  for now hardcoded
+const API_URL = 'http://142.93.157.84:8082/cleaningschedule/auth/'; //TODO: make this have prod/dev.  for now hardcoded
 
 class AuthService {
     login(user) {
