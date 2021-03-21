@@ -1,7 +1,7 @@
 import axios from 'axios'
 import routes from './routes'
 
-axios.defaults.baseURL = 'http://localhost:8082/cleaningschedule'
+axios.defaults.baseURL = 'http://142.93.157.84:8082/cleaningschedule'
 
 export default{
 	config: {
