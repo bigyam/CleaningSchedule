@@ -49,12 +49,16 @@ export default {
       //TODO:fix these messages
         onSuccess(message = null) {
           /**let text = this.$t('SaveSuccessful');
-
+           
           if(typeof message == "string")
               text = message
 
           this.msg = {show: true, isError: false, text };**/
-          console.log("success");
+          let text = "success";
+          if(typeof message == "string")
+              text = message
+          console.log(text);
+
       },
       onError(message = null) {
           /**let text = this.$t('ErrorOccured');
@@ -63,7 +67,10 @@ export default {
               text = message
               
           this.msg = {show: true, isError: true, text };**/
-          console.log("error occured");
+          let text = "erroroccured";
+          if(typeof message == "string")
+              text = message
+          console.log(text);
       }
   }
 }
