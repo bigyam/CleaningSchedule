@@ -46,21 +46,24 @@ export default {
 
   components: { NavHeader },
   methods: {
+      //TODO:fix these messages
         onSuccess(message = null) {
-          let text = this.$t('SaveSuccessful');
+          /**let text = this.$t('SaveSuccessful');
 
           if(typeof message == "string")
               text = message
 
-          this.msg = {show: true, isError: false, text };
+          this.msg = {show: true, isError: false, text };**/
+          console.log("success");
       },
       onError(message = null) {
-          let text = this.$t('ErrorOccured');
+          /**let text = this.$t('ErrorOccured');
 
           if(typeof message == "string")
               text = message
               
-          this.msg = {show: true, isError: true, text };
+          this.msg = {show: true, isError: true, text };**/
+          console.log("error occured");
       }
   }
 }
